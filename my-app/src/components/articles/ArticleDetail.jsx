@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import style from './ArticleDetail.module.css';
-
+import { Link } from 'react-router-dom';
 const ArticleDetail = () => {
 
 
@@ -12,6 +12,13 @@ const ArticleDetail = () => {
     const [loading, setLoading] = useState(true);
     const [tags, setTags] = useState([]);
     const [error, setError] = useState(null);
+    const [token, setToken] = useState('');
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+            setToken(storedToken);
+        }
+    }, []);
     useEffect(() => {
         fetch(`https://api.realworld.io/api/articles/${slug}`)
             .then(response => {
@@ -83,8 +90,16 @@ const ArticleDetail = () => {
                             ))}
                         </ul>
                         <div className={style.linkSign}>
-                            <a href="">Sign in</a> or <a href="">Sign up</a> to add comments on this article
-                        </div>
+
+                        {token ? (
+                            <p>Signed in with token: {token}</p>
+                        ) : (
+                            <>
+ <Link  to="/users/login">Sign In</Link> or <Link  to="/users/register">Sign Up</Link> to add comments on this article
+                            </>
+                        )}
+                    </div>
+
                     </div>
                 )
 

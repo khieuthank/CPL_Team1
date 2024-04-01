@@ -34,12 +34,15 @@ const Header = () => {
                             marginLeft: '15px'
                         }}>
 
-                            <Link className="nav-link" to="/users/register">Sign In</Link>
+                            <Link className="nav-link" to="/users/login">Sign In</Link>
+
                         </li>
                         <li className="nav-item" style={{
                             marginLeft: '15px'
                         }}>
-                            <Link className="nav-link" to="/users/login">Sign Up</Link>
+
+                            <Link className="nav-link" to="/users/register">Sign Up</Link>
+
                         </li>
                     </ul>
                 </div>
