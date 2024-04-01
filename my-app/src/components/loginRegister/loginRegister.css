@@ -1,4 +1,8 @@
 /* Global Styles */
+
+.auth-page{
+
+
 *, *::before, *::after {
     box-sizing: inherit;
 }
@@ -181,6 +185,7 @@ button, input, optgroup, select, textarea {
 
 
 input:not([type="file" i], [type="image" i], [type="checkbox" i], [type="radio" i]) {
+    
 }
 
 input {
@@ -225,4 +230,4 @@ input {
 
 
 
-
+}
