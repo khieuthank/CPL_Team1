@@ -2,6 +2,8 @@ import React from 'react';
 import style from './Articles.module.css';
 import { useState, useEffect } from 'react';
 import { formatDate } from '../../utils/utils';
+import { useNavigate } from 'react-router-dom';
+
 
 const Articles = () => {
 
@@ -11,6 +13,8 @@ const Articles = () => {
     const [articles, setArticles] = useState([]);
     const [isloadArticles, setIsLoadArticles] = useState(true);
     const [totalPages, setTotalPages] = useState(1);
+
+    const nav = useNavigate();
 
     const itemsPerPage = 10;
 
@@ -40,6 +44,10 @@ const Articles = () => {
       const handlePageChange = (page) => {
         setCurrentPage(page);
       };
+
+      const handleToArticleDetails = (slug) => {
+        nav(`/article/${slug}`);
+      }
 
 
     return (
@@ -71,16 +79,16 @@ const Articles = () => {
                                         </div>
                                     </div>
                                     <div className={style.articlePreview}>
-                                        <div className={style.content}>
+                                        <div className={style.content} onClick={() => handleToArticleDetails(article.slug)}>
                                             <h5>{article.title}</h5>
                                             <p>{article.description}</p>
                                         </div>
                                         <div className={style.more}>
-                                            <div className={style.readmore}>Read more...</div>
+                                            <div className={style.readmore} onClick={() => handleToArticleDetails(article.slug)}>Read more...</div>
                                             <div className={style.articleTag}>
                                               {
-                                                article.tagList.map(tag => (
-                                                    <li>{tag}</li>
+                                                article.tagList.map((tag, index) => (
+                                                    <li key={index}>{tag}</li>
                                                 ))
                                               }
                                             </div>
@@ -111,8 +119,8 @@ const Articles = () => {
                                 isloadTag ? (<p>Loading...</p>) : (
                                     <div className={style.listTag}>
                                 {
-                                    tags.tags.map(tag => (
-                                        <a href="">{tag}</a>
+                                    tags.tags.map((tag, index) => (
+                                        <a key={index} href="">{tag}</a>
                                       ))
                                 }
                             </div>
