@@ -1,31 +1,53 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { Link } from 'react-router-dom';
 
 
 const Header = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <div className="container-fluid">
-                <a className="navbar-brand" href="/">Forum Name</a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <a className="nav-link" href="/">Home</a>
+        <nav className="navbar navbar-light">
+            <div className="container">
+                <Link
+                    className="navbar-brand"
+                    to="/"
+                    style={{
+                        fontFamily: 'titillium web, sans-serif',
+                        fontSize: '1.5rem',
+                        paddingTop: '0',
+                        marginRight: '2rem',
+                        color: '#5cb85c'
+                    }}
+                >
+                    Conduit
+                </Link>
+
+
+
+                <div className="ml-auto">
+                    <ul className="nav navbar-nav d-flex flex-row" >
+                        <li className="nav-item" style={{
+                            marginLeft: '15px'
+                        }}>
+                            <Link className="nav-link" to="/" >Home</Link>
                         </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="/signin">Sign In</a>
+                        <li className="nav-item" style={{
+                            marginLeft: '15px'
+                        }}>
+
+                            <Link className="nav-link" to="/users/register">Sign In</Link>
                         </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="/signup">Sign Up</a>
+                        <li className="nav-item" style={{
+                            marginLeft: '15px'
+                        }}>
+                            <Link className="nav-link" to="/users/login">Sign Up</Link>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
+
     );
 };
+
 
 export default Header;

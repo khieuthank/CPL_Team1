@@ -1,4 +1,4 @@
-/* Global Styles */
+.auth-page{/* Global Styles */
 *, *::before, *::after {
     box-sizing: inherit;
 }
@@ -226,3 +226,4 @@ input {
 
 
 
+}
