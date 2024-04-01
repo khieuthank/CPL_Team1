@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './loginRegister.css';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -44,40 +46,46 @@ const Login = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <h2>Login</h2>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <p>Need an account? <a href="/signup">Sign Up</a></p>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email</label>
-                    <input 
-                        type="email" 
-                        className="form-control" 
-                        id="email" 
-                        name="email" 
-                        placeholder="Email" 
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required 
-                    />
+        <div className="auth-page">
+            <div className="container page">
+                <div className="row">
+                    <div className="col-md-6 offset-md-3 col-xs-12">
+                        <h1 className="text-xs-center">Sign in</h1>
+                        {error && <div className="alert alert-danger text-xs-center">{error}</div>}
+                        <Link to="/users/register">
+                            <p className="text-xs-center">Need an account?</p>
+                        </Link>
+                        
+                        <form onSubmit={handleSubmit}>
+                            <fieldset className="form-group">
+                                <input 
+                                    type="email" 
+                                    className="form-control form-control-lg" 
+                                    id="email" 
+                                    name="email" 
+                                    placeholder="Email" 
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required 
+                                />
+                            </fieldset>
+                            <fieldset className="form-group">
+                                <input 
+                                    type="password" 
+                                    className="form-control form-control-lg" 
+                                    id="password" 
+                                    name="password" 
+                                    placeholder="Password" 
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required 
+                                />
+                            </fieldset>
+                            <button type="submit" className="btn btn-lg btn-primary pull-xs-right">Sign in</button>
+                        </form>
+                    </div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
-                    <input 
-                        type="password" 
-                        className="form-control" 
-                        id="password" 
-                        name="password" 
-                        placeholder="Password" 
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required 
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">Login</button>
-            </form>
-            <button className="btn btn-secondary mt-3" onClick={() => window.location.href = '/'}><i className="fas fa-house"></i> Back to Home</button>
+            </div>
         </div>
     );
 };

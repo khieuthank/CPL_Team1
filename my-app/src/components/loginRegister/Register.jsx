@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './loginRegister.css';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -32,10 +34,9 @@ const Register = () => {
                 // Save token to local storage
                 localStorage.setItem('token', data.user.token);
                 
-                // Redirect to home page or user profile page
+                // Redirect to home page
                 window.location.href = '/';
             } else if (response.status === 422) {
-                // Handle validation errors
                 setError(data.errors.body.join(', '));
             } else {
                 setError('Unexpected error occurred');
@@ -47,52 +48,58 @@ const Register = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <h2>Register</h2>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <p>Already have an account? <a href="/login">Login</a></p>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="username" className="form-label">Username</label>
-                    <input 
-                        type="text" 
-                        className="form-control" 
-                        id="username" 
-                        name="username" 
-                        placeholder="Username" 
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required 
-                    />
+        <div className="auth-page">
+            <div className="container page">
+                <div className="row">
+                    <div className="col-md-6 offset-md-3 col-xs-12">
+                        <h1 className="text-xs-center">Register</h1>
+                        {error && <div className="alert alert-danger text-xs-center">{error}</div>}
+                        <Link to="/users/login">
+                            <p className="text-xs-center">Already have an account?</p>
+                        </Link>
+                        
+                        <form onSubmit={handleSubmit}>
+                            <fieldset className="form-group">
+                                <input 
+                                    type="text" 
+                                    className="form-control form-control-lg" 
+                                    id="username" 
+                                    name="username" 
+                                    placeholder="Username" 
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    required 
+                                />
+                            </fieldset>
+                            <fieldset className="form-group">
+                                <input 
+                                    type="email" 
+                                    className="form-control form-control-lg" 
+                                    id="email" 
+                                    name="email" 
+                                    placeholder="Email" 
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required 
+                                />
+                            </fieldset>
+                            <fieldset className="form-group">
+                                <input 
+                                    type="password" 
+                                    className="form-control form-control-lg" 
+                                    id="password" 
+                                    name="password" 
+                                    placeholder="Password" 
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required 
+                                />
+                            </fieldset>
+                            <button type="submit" className="btn btn-lg btn-primary pull-xs-right">Register</button>
+                        </form>
+                    </div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email</label>
-                    <input 
-                        type="email" 
-                        className="form-control" 
-                        id="email" 
-                        name="email" 
-                        placeholder="Email" 
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required 
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
-                    <input 
-                        type="password" 
-                        className="form-control" 
-                        id="password" 
-                        name="password" 
-                        placeholder="Password" 
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required 
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">Register</button>
-            </form>
+            </div>
         </div>
     );
 };
