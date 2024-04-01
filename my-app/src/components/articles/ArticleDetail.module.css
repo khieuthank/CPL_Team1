@@ -142,3 +142,8 @@
 .containerDescription {
     margin-bottom: 4px;
 }
+
+/* -------------- */
+.linkSign p {
+    display: inline-block;
+}

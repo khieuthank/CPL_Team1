@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import style from './ArticleDetail.module.css';
-
+import { Link } from 'react-router-dom';
 const ArticleDetail = () => {
 
 
@@ -83,7 +83,7 @@ const ArticleDetail = () => {
                             ))}
                         </ul>
                         <div className={style.linkSign}>
-                            <a href="">Sign in</a> or <a href="">Sign up</a> to add comments on this article
+                                <Link  to="/users/login">Sign In</Link> or <Link  to="/users/register">Sign Up</Link> to add comments on this article
                         </div>
                     </div>
                 )
