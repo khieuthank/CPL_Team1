@@ -1,0 +1,144 @@
+.bannerArticleDetail {
+    background-color: #333;
+    color: white;
+    padding: 3%;
+    margin-bottom: 2rem;
+}
+
+.bannerArticleDetail h1 {
+    font-size: 2.8rem;
+    font-weight: 600;
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+    margin-left: 15%;
+    margin-right: 15%;
+}
+/* ----------------------------------------- */
+.articleContent {
+    margin-left: 15%;
+    margin-right: 15%;
+    display: flex; 
+
+}
+
+
+
+
+.articleButton {
+    display: flex; 
+    align-items: center;
+}
+
+
+.articleImage img {
+    margin-right: 10px;
+    border-radius: 100%;
+    width: 40px;
+    height: 40px;
+}
+.articleImage span {
+    display: block;
+    margin-left: 4%;
+    color: rgb(187, 187, 187);
+    font-size: 12px;
+}
+
+/* -------------------------------- */
+
+/* -------------------------------- */
+.buttonFavorite {
+    border: 1px solid rgb(92, 184, 92);
+    border-radius: 5px;
+    color: rgb(92, 184, 92);
+    width: 200px;
+    background-color: #333;
+}
+
+.buttonFollow {
+    margin-left: 40px;
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 5px;
+    color: rgb(204, 204, 204);
+    width: 200px;
+    background-color: #333;
+    margin-right: 5px;
+}
+
+.buttonFollow:hover {
+    background-color: rgb(204, 204, 204);
+    color: rgb(170, 164, 164);
+}
+
+.buttonFavorite:hover {
+    background-color: rgb(74, 156, 74);
+    color: white;
+}
+
+.articleImage {
+    display: flex;
+}
+.articleImage a {
+    text-decoration: none;
+    color: white;
+}
+.articleImage a:hover {
+    text-decoration: underline;
+}
+/* ------------------------------------------- */
+.containerArticleDetail {
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+.containerArticleDetail p {
+    font-family: "Source Serif Pro", serif;
+    font-size: 19.2px;
+    line-height: 28.8px;
+    padding-bottom: 50px;
+
+}
+
+.articleContentFooter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px; 
+}
+
+/* ---------------------------------------------- */
+.linkSign {
+    margin-left: 25%;
+}
+.linkSign a {
+    text-decoration: none;
+    color: rgb(74, 156, 74);
+}
+
+.linkSign a:hover {
+    text-decoration: underline;
+    color: rgb(74, 156, 74);
+}
+
+/* ---------------------------- */
+
+.tagList {
+    display: flex;
+    list-style-type: none;
+    padding: 20px;
+    margin-left: 14%;
+    margin-right: 14%;
+    border-bottom: 2px rgb(204, 204, 204) solid;
+}
+
+.tagItem {
+    margin-right: 6px;
+    border: 1px solid rgb(170, 164, 164);
+    padding: 5px;
+    border-radius: 10px;
+    color: rgb(170, 164, 164);
+    font-size: 12px;
+}
+
+/* ----------- */
+.containerDescription {
+    margin-bottom: 4px;
+}
