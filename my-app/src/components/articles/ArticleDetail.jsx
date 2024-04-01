@@ -12,6 +12,13 @@ const ArticleDetail = () => {
     const [loading, setLoading] = useState(true);
     const [tags, setTags] = useState([]);
     const [error, setError] = useState(null);
+    const [token, setToken] = useState('');
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+            setToken(storedToken);
+        }
+    }, []);
     useEffect(() => {
         fetch(`https://api.realworld.io/api/articles/${slug}`)
             .then(response => {
@@ -83,8 +90,14 @@ const ArticleDetail = () => {
                             ))}
                         </ul>
                         <div className={style.linkSign}>
-                            <a href="">Sign in</a> or <a href="">Sign up</a> to add comments on this article
-                        </div>
+                        {token ? (
+                            <p>Signed in with token: {token}</p>
+                        ) : (
+                            <>
+                                <a href="">Sign in</a> or <a href="">Sign up</a> to add comments on this article
+                            </>
+                        )}
+                    </div>
                     </div>
                 )
 
