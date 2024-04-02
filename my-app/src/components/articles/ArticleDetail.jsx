@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import style from './ArticleDetail.module.css';
 import { Link } from 'react-router-dom';
+import Comment from '../comments/Comments'
 const ArticleDetail = () => {
 
 
@@ -92,7 +93,7 @@ const ArticleDetail = () => {
                         <div className={style.linkSign}>
 
                         {token ? (
-                            <p>Signed in with token: {token}</p>
+                            <Comment></Comment>
                         ) : (
                             <>
  <Link  to="/users/login">Sign In</Link> or <Link  to="/users/register">Sign Up</Link> to add comments on this article
