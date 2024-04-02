@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import './setting.css';
+
 
 const Settings = () => {
     const [image, setImage] = useState('');
@@ -7,14 +10,14 @@ const Settings = () => {
     const [email, setEmail] = useState('');
     const [bio, setBio] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [token, setToken] = useState('');
+    const navigate = useNavigate();  // Use useNavigate instead of useHistory
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
             setToken(storedToken);
-            
-            // Fetch user data based on token
             fetchUserData(storedToken);
         }
     }, []);
@@ -41,6 +44,11 @@ const Settings = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+
         const userData = {
             user: {
                 image,
@@ -61,7 +69,7 @@ const Settings = () => {
             const updatedUser = response.data.user;
             console.log('User settings updated:', updatedUser);
             alert('Update successfully');
-            
+            navigate('/');  // Navigate to the home page after successful update
 
         } catch (error) {
             console.error('Update settings failed:', error);
@@ -70,7 +78,7 @@ const Settings = () => {
     };
 
     return (
-        <div>
+        <div >
             <div className='container-settings'>
                 <div><h1>Your Settings</h1></div>
                 <div>
@@ -107,6 +115,7 @@ const Settings = () => {
                                 name="email"
                                 placeholder="Email"
                                 value={email}
+                                disabled
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                             />
@@ -132,6 +141,18 @@ const Settings = () => {
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </fieldset>
+                        <fieldset className="form-group">
+                            <input
+                                type="password"
+                                className="form-control form-control-lg"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder="Confirm Password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
                             />
                         </fieldset>
