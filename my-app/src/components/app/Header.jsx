@@ -15,7 +15,8 @@ const Header = () => {
                         fontSize: '1.5rem',
                         paddingTop: '0',
                         marginRight: '2rem',
-                        color: '#5cb85c'
+                        color: '#5cb85c',
+                        fontWeight: 'bold'
                     }}
                 >
                     Conduit
