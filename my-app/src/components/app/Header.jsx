@@ -5,6 +5,7 @@ import Settings from '../profile/Settings';
 import style from './Header.module.css';
 import Profile from '../profile/Profile';
 
+
 const Header = () => {
     const [token, setToken] = useState('');
     const [image, setImage] = useState('');
