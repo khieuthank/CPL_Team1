@@ -91,14 +91,14 @@ const ArticleDetail = () => {
                         </ul>
                         <div className={style.linkSign}>
 
-                        {token ? (
-                            <p>Signed in with token: {token}</p>
-                        ) : (
-                            <>
- <Link  to="/users/login">Sign In</Link> or <Link  to="/users/register">Sign Up</Link> to add comments on this article
-                            </>
-                        )}
-                    </div>
+                            {token ? (
+                                <p>Signed in with token: {token}</p>
+                            ) : (
+                                <>
+                                    <Link to="/users/login">Sign In</Link> or <Link to="/users/register">Sign Up</Link> to add comments on this article
+                                </>
+                            )}
+                        </div>
 
                     </div>
                 )
