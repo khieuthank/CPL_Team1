@@ -1,6 +1,7 @@
 
 import './App.css';
 import Header from './components/app/Header';
+import Footer from './components/app/Footer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Articles from './components/articles/Articles';
 
@@ -20,6 +21,7 @@ function App() {
     <Route path="/article/:slug" element={<ArticleDetail></ArticleDetail>}/>
     <Route path="/settings" element={<Settings></Settings>}/>
     </Routes>
+    <Footer></Footer>
     </BrowserRouter>
   );
 }
