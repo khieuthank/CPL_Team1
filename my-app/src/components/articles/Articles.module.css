@@ -25,10 +25,14 @@
 .titleGlobal a{
     color: #5CB85C;
     text-decoration: none;
-    border-bottom: 2px solid #5CB85C !important;
     padding: 10px;
     font-size: 16px;
     font-weight: 500;
+    cursor: pointer;
+}
+
+.aActive{
+    border-bottom: 2px solid #5CB85C !important;
 }
 
 .article{
@@ -172,9 +176,13 @@
     font-weight: 600;
 }
 
+.disable{
+    display: none;
+}
+
 .listTag a{
     text-decoration: none;
-    color: white;
+    color: white !important;
     padding: 0px 6px 0px 6px;
     background-color: rgb(149, 146, 165);
     margin-right: 3px;
@@ -182,6 +190,11 @@
     border-radius: 15px;
     font-size: 0.8rem;
     display: inline-block; 
+    cursor: pointer;
+}
+.tagSelected{
+    background-color: rgb(86, 85, 97) !important;
+    color: black;
 }
 
 .listTag a:hover{
