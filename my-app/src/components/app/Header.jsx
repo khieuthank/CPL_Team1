@@ -1,19 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';  // Import axios
 import Settings from '../profile/Settings';
+
 const Header = () => {
     const [token, setToken] = useState('');
+    const [image, setImage] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [bio, setBio] = useState('');
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
             setToken(storedToken);
+            fetchUserData(storedToken);  // Fetch user data when token is set
         }
     }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         setToken('');
+        setImage('');
+        setUsername('');
+        setEmail('');
+        setBio('');
+    };
+
+    const fetchUserData = async (token) => {
+        try {
+            const response = await axios.get('https://api.realworld.io/api/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const userData = response.data.user;
+            setImage(userData.image);
+            setUsername(userData.username);
+            setEmail(userData.email);
+            setBio(userData.bio);
+
+        } catch (error) {
+            console.error('Fetching user data failed:', error);
+        }
     };
 
     return (
@@ -45,6 +75,12 @@ const Header = () => {
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
                                     <Link className="nav-link" to="/new-article">New Article</Link>
+                                </li>
+                                <li className="nav-item" style={{ marginLeft: '15px' }}>
+                                    <button className="nav-link active">
+                                        <img src={image} className='user-pic' alt={username} />
+                                        {username}
+                                    </button>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
                                     <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
