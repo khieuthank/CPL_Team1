@@ -9,7 +9,7 @@ import ArticleDetail from './components/articles/ArticleDetail';
 import Login from './components/loginRegister/Login';
 import Register from './components/loginRegister/Register';
 import Settings from './components/profile/Settings';
-
+import Profile from './components/profile/Profile';
 function App() {
   return (
     <BrowserRouter>
@@ -20,6 +20,7 @@ function App() {
     <Route path="/users/register" element={<Register></Register>} />
     <Route path="/article/:slug" element={<ArticleDetail></ArticleDetail>}/>
     <Route path="/settings" element={<Settings></Settings>}/>
+    <Route path="/profile/:username" element={<Profile></Profile>}/>
     </Routes>
     <Footer></Footer>
     </BrowserRouter>

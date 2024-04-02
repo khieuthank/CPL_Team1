@@ -92,7 +92,6 @@ const ArticleDetail = () => {
                         </ul>
                         <div className={style.linkSign}>
 
-
                         {token ? (
                             <Comment></Comment>
                         ) : (
@@ -101,7 +100,6 @@ const ArticleDetail = () => {
                             </>
                         )}
                     </div>
-
 
                     </div>
                 )
