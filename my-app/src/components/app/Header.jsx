@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';  // Import axios
+import axios from 'axios';  
 import Settings from '../profile/Settings';
+import style from './Header.module.css';
+import Profile from '../profile/Profile';
 
 const Header = () => {
     const [token, setToken] = useState('');
@@ -14,7 +16,7 @@ const Header = () => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
             setToken(storedToken);
-            fetchUserData(storedToken);  // Fetch user data when token is set
+            fetchUserData(storedToken); 
         }
     }, []);
 
@@ -66,7 +68,7 @@ const Header = () => {
                 <div className="ml-auto">
                     <ul className="nav navbar-nav d-flex flex-row">
                         <li className="nav-item" style={{ marginLeft: '15px' }}>
-                            <Link className="nav-link" to="/">Home</Link>
+                            <Link className="nav-link" to="/" >Home</Link>
                         </li>
                         {token ? (
                             <>
@@ -77,10 +79,10 @@ const Header = () => {
                                     <Link className="nav-link" to="/new-article">New Article</Link>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <button className="nav-link active">
-                                        <img src={image} className='user-pic' alt={username} />
-                                        {username}
-                                    </button>
+                                    <Link to={`/profile/${username}`} className="nav-link active">
+                                        <img src={image} className={style.imageUser} alt={username} />
+                                        <span className={style.nameUser}>{username}</span>
+                                    </Link>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
                                     <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
