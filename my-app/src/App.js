@@ -8,6 +8,7 @@ import Articles from './components/articles/Articles';
 import ArticleDetail from './components/articles/ArticleDetail';
 import Login from './components/loginRegister/Login';
 import Register from './components/loginRegister/Register';
+import Settings from './components/profile/Settings';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
     <Route path="/users/login" element={<Login></Login>} />
     <Route path="/users/register" element={<Register></Register>} />
     <Route path="/article/:slug" element={<ArticleDetail></ArticleDetail>}/>
+    <Route path="/settings" element={<Settings></Settings>}/>
     </Routes>
     <Footer></Footer>
     </BrowserRouter>
