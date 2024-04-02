@@ -1,6 +1,7 @@
 
 import './App.css';
 import Header from './components/app/Header';
+import Footer from './components/app/Footer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Articles from './components/articles/Articles';
 
@@ -18,6 +19,7 @@ function App() {
     <Route path="/users/register" element={<Register></Register>} />
     <Route path="/article/:slug" element={<ArticleDetail></ArticleDetail>}/>
     </Routes>
+    <Footer></Footer>
     </BrowserRouter>
   );
 }

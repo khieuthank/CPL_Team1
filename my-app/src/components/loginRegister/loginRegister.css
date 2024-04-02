@@ -2,7 +2,7 @@
 /* Global Styles */
 
 .auth-page{
-
+min-height: 86vh;
 
 
 *, *::before, *::after {
