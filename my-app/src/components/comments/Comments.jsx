@@ -27,14 +27,12 @@ const Comments = () => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
             setToken(storedToken);
+            fetchUserData(storedToken); 
         }
     }, []);
 
     useEffect(() => {
-        // Fetch article details
         fetchArticle();
-
-        // Fetch comments for the article using Axios
         fetchCommentsWithAxios();
     }, [slug]);
 
@@ -97,7 +95,6 @@ const Comments = () => {
                 return response.json();
             })
             .then(() => {
-                // After posting the comment, fetch the updated comments
                 fetchCommentsWithAxios();
                 setCommentBody('');
             })
@@ -117,14 +114,30 @@ const Comments = () => {
                 if (!response.ok) {
                     throw new Error('Failed to delete comment');
                 }
-                // Filter out the deleted comment
                 setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
             })
             .catch(error => {
                 setError(error.message);
             });
     };
+// -------------------------------------
+const [image, setImage] = useState('');
+const fetchUserData = async (token) => {
+    try {
+        const response = await axios.get('https://api.realworld.io/api/user', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
+        const userData = response.data.user;
+        setImage(userData.image);
+
+    } catch (error) {
+        console.error('Fetching user data failed:', error);
+    }
+};
+// -------------------------------------
     return (
         <div className={style.containerCard}>
             <textarea
@@ -134,7 +147,7 @@ const Comments = () => {
             ></textarea>
 
             <div className={style.cardFooter}>
-                <img src={article.author?.image} alt="Author" />
+                <img src={image} alt="Author" style={{ height: '40px', width: '40px', marginLeft: '10px' }} />
                 <button onClick={handlePostComment}>Post Comment</button>
             </div>
 
@@ -147,26 +160,26 @@ const Comments = () => {
                             </div>
 
                             <div className="card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-        <img
-            src={comment.author.image}
-            alt="Commenter"
-            className="comment-author-img"
-            style={{ height: '20px', width: '20px', marginRight: '8px' }}
-        />
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <img
+                                        src={comment.author.image}
+                                        alt="Commenter"
+                                        className="comment-author-img"
+                                        style={{ height: '20px', width: '20px', marginRight: '8px' }}
+                                    />
 
-        <a className="comment-author" href={`/profile/${comment.author.username}`}>
-            {comment.author.username}
-        </a>
-        <span className="date-posted" style={{ marginLeft: '8px' }}>{new Date(comment.createdAt).toLocaleString()}</span>
-    </div>
+                                    <a className="comment-author" href={`/profile/${comment.author.username}`}>
+                                        {comment.author.username}
+                                    </a>
+                                    <span className="date-posted" style={{ marginLeft: '8px' }}>{new Date(comment.createdAt).toLocaleString()}</span>
+                                </div>
 
-    {token && (
-        <button className="mod-options" style={{ border: 'none' }} onClick={() => handleDeleteComment(comment.id)}>
-            <i className="fa-solid fa-trash"></i>
-        </button>
-    )}
-</div>
+                                {token && (
+                                    <button className="mod-options" style={{ border: 'none' }} onClick={() => handleDeleteComment(comment.id)}>
+                                        <i className="fa-solid fa-trash"></i>
+                                    </button>
+                                )}
+                            </div>
 
                         </div>
                     ))
