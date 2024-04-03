@@ -78,7 +78,7 @@ const Settings = () => {
     };
 
     return (
-        <div >
+        <div className='container-all-settings'>
             <div className='container-settings'>
                 <div><h1>Your Settings</h1></div>
                 <div>
