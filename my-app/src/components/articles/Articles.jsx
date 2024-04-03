@@ -4,15 +4,21 @@ import { useState, useEffect } from 'react';
 
 import ArticlesTag from './ArticlesTag';
 import GlobalFeed from './GlobalFeed';
+import YourFeed from './YourFeed';
+import { useAuth } from '../context/AuthContext';
 
 
 const Articles = () => {
 
+    const { isLoggedIn } = useAuth();
+
     const [tags, setTags] = useState([]);
     const [isloadTag, setIsLoadTag] = useState(true);
     const [tagSelect, setTagSelect] = useState(null);
-    const [isPageTag, setIsPageTag] = useState(false);
-   
+    const [isPage, setIsPage] = useState('globalfeed');
+    const [token, setToken] = useState(null);
+
+    console.log(' logger' + isLoggedIn);
 
     useEffect(() => {
         const apiUrl = 'https://api.realworld.io/api/tags';
@@ -25,19 +31,34 @@ const Articles = () => {
             .catch(error => console.error('Error fetching tags:', error));
     }, []);
 
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+            setToken(storedToken);
+            setIsPage('yourfeed');
+        }
+        else{
+            setIsPage('globalfeed');
+        }
+    
+    }, [isLoggedIn]);
 
     const handleClickTags = (tag) => {
-         setTagSelect(tag);
-         setIsPageTag(true);
+        setTagSelect(tag);
+        setIsPage('tagfeed');
     }
 
-    const handleToPageglobal = () =>{
-        setIsPageTag(false);
-        
-    }
+    const handleToPage = (page) =>{
+        if(page === 'yourfeed'){
+            setIsPage('yourfeed');
+        }
+        if(page === 'globalfeed'){
+            setIsPage('globalfeed');
+        }
+        if(page === 'tagfeed'){
+            setIsPage('tagfeed');
+        }
 
-    const handleToPageTag = () =>{
-        setIsPageTag(true);
     }
 
     return (
@@ -50,16 +71,20 @@ const Articles = () => {
                 <div className='row'>
                     <div className='col-md-9'>
                         <div className={style.titleGlobal}>
-                            <a className={isPageTag ? '' : style.aActive} onClick={handleToPageglobal}>Global Feed</a>
-                            {tagSelect !== null && (<a className={!isPageTag ? '' : style.aActive} onClick={handleToPageTag}>#{tagSelect}</a>)}
+                            {isLoggedIn && (<a className={isPage === 'yourfeed' ? style.aActive : ''} onClick={() => handleToPage('yourfeed')}>Your feed</a>)}
+                            <a className={isPage === 'globalfeed' ? style.aActive : ''} onClick={() => handleToPage('globalfeed')}>Global Feed</a>
+                            {tagSelect !== null && (<a className={isPage === 'tagfeed' ? style.aActive : ''} onClick={() => handleToPage('tagfeed')}>#{tagSelect}</a>)}
                         </div>
                         {
-                            <div className={isPageTag ? null : style.disable }><ArticlesTag tag={tagSelect}></ArticlesTag></div>
+                            <div className={isPage == 'tagfeed' ? null : style.disable}><ArticlesTag tag={tagSelect}></ArticlesTag></div>
                         }
                         {
-                            <div className={!isPageTag ? null : style.disable}><GlobalFeed></GlobalFeed></div>
+                            <div className={isPage == 'globalfeed' ? null : style.disable}><GlobalFeed></GlobalFeed></div>
                         }
-                        
+                        {
+                             <div className={isPage == 'yourfeed' ? null : style.disable}><YourFeed></YourFeed></div>
+                        }
+
                     </div>
                     <div className='col-md-3'>
                         <div className={style.tags}>
