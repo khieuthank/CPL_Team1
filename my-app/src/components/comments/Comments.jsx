@@ -147,7 +147,7 @@ const fetchUserData = async (token) => {
             ></textarea>
 
             <div className={style.cardFooter}>
-                <img src={image} alt="Author" style={{ height: '40px', width: '40px', marginLeft: '10px' }} />
+                <img src={image} alt="Author" style={{ height: '40px', width: '40px', marginLeft: '10px', borderRadius:'20px'}} />
                 <button onClick={handlePostComment}>Post Comment</button>
             </div>
 

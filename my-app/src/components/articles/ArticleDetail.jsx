@@ -52,7 +52,18 @@ const ArticleDetail = () => {
             document.head.removeChild(link);
         };
     }, []);
-
+    // -------------------------------------------------------------------------
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [isFavorited, setIsFavorited] = useState(false);
+    const handleFollowClick = () => {
+        setIsFollowing(prevState => !prevState);
+    };
+    const handleFavoriteClick = () => {
+        const newFavoritesCount = isFavorited ? article.favoritesCount - 1 : article.favoritesCount + 1;
+        setIsFavorited(prevState => !prevState);
+        setArticle(prevArticle => ({ ...prevArticle, favoritesCount: newFavoritesCount }));
+    };
+    // ----------------------------------------------------------------------------------------------
     return (
         <div>
             {
@@ -76,8 +87,23 @@ const ArticleDetail = () => {
 
                                 </div>
                                 <div className={style.articleButton}>
-                                    <button className={style.buttonFollow}><i className="fa-solid fa-plus"></i> Follow Maksim Esteban</button>
-                                    <button className={style.buttonFavorite}><i className="fa-solid fa-heart"></i> Favorite Article (355)</button>
+                                    {token ? (
+                                        <>
+                                            <button className={style.buttonFollow} onClick={handleFollowClick}>
+                                                <i className="fa-solid fa-plus"></i> {isFollowing ? 'Unfollow' : 'Follow'} Maksim Esteban
+                                            </button>
+                                            <button className={style.buttonFavorite} onClick={handleFavoriteClick}>
+                                                <i className="fa-solid fa-heart"></i> {isFavorited ? 'Unfavorite' : 'Favorite'} Article ({article.favoritesCount})
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Link to="/users/register">
+                                                <button className={style.buttonFollow}><i className="fa-solid fa-plus"></i> Follow Maksim Esteban</button>
+                                                <button className={style.buttonFavorite}><i className="fa-solid fa-heart"></i> Favorite Article ({article.favoritesCount})</button>
+                                            </Link>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -92,14 +118,14 @@ const ArticleDetail = () => {
                         </ul>
                         <div className={style.linkSign}>
 
-                        {token ? (
-                            <Comment></Comment>
-                        ) : (
-                            <>
- <Link  to="/users/login">Sign In</Link> or <Link  to="/users/register">Sign Up</Link> to add comments on this article
-                            </>
-                        )}
-                    </div>
+                            {token ? (
+                                <Comment></Comment>
+                            ) : (
+                                <>
+                                    <Link to="/users/login">Sign In</Link> or <Link to="/users/register">Sign Up</Link> to add comments on this article
+                                </>
+                            )}
+                        </div>
 
                     </div>
                 )
