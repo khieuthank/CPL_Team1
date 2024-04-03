@@ -10,9 +10,12 @@ import Login from './components/loginRegister/Login';
 import Register from './components/loginRegister/Register';
 import Settings from './components/profile/Settings';
 import Profile from './components/profile/Profile';
+import { AuthProvider } from './components/context/AuthContext';
 function App() {
   return (
+    <AuthProvider>
     <BrowserRouter>
+    
     <Header></Header>
     <Routes>
     <Route path="/" element={<Articles></Articles>} />
@@ -23,7 +26,10 @@ function App() {
     <Route path="/profile/:username" element={<Profile></Profile>}/>
     </Routes>
     <Footer></Footer>
+    
     </BrowserRouter>
+    </AuthProvider>
+    
   );
 }
 
