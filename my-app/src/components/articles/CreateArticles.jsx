@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './AddArticle.css';
 
 const CreateArticles = () => {
     // State variables
@@ -66,7 +67,7 @@ const CreateArticles = () => {
     };
 
     return (
-        <div className='container mt-5'>
+        <div className='container-create-article mt-5'>
             <h2>Create Article</h2>
 
             {/* Error Message */}
