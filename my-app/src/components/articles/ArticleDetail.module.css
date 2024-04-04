@@ -26,6 +26,7 @@
 .articleButton {
     display: flex; 
     align-items: center;
+
 }
 
 
@@ -147,3 +148,8 @@
 .linkSign p {
     display: inline-block;
 }
+
+.commentSign {
+   margin-left: 10%;
+   margin-right: 10%;
+ }

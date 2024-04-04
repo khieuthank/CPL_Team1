@@ -2,31 +2,53 @@ import React from 'react';
 import style from './Articles.module.css';
 import { useState, useEffect } from 'react';
 import { formatDate } from '../../utils/utils';
+import { useAuth } from '../context/AuthContext';
 
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 
 const GlobalFeed = () => {
 
     const itemsPerPage = 10;
+
+    const { isLoggedIn } = useAuth();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [isloadArticles, setIsLoadArticles] = useState(true);
     const [articles, setArticles] = useState([]);
 
+    const storedToken = localStorage.getItem('token');
+
     const nav = useNavigate();
 
     useEffect(() => {
         const apiUrl = `https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}`;
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                setArticles(data.articles);
-                setTotalPages(Math.ceil(data.articlesCount / itemsPerPage));
-                setIsLoadArticles(false);
+        if(storedToken == null){
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    setArticles(data.articles);
+                    setTotalPages(Math.ceil(data.articlesCount / itemsPerPage));
+                    setIsLoadArticles(false);
+                })
+                .catch(error => console.error('Error fetching tags:', error));
+        }
+        else{
+            fetch(apiUrl, {
+                headers: {
+                    'Authorization': `Token ${storedToken}`
+                }
             })
-            .catch(error => console.error('Error fetching tags:', error));
-    }, [currentPage]);
+                .then(response => response.json())
+                .then(data => {
+                    setArticles(data.articles);
+                    setTotalPages(Math.ceil(data.articlesCount / itemsPerPage));
+                    setIsLoadArticles(false);
+                })
+                .catch(error => console.error('Error fetching tags:', error));
+        }
+        
+    }, [currentPage, isLoggedIn]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -34,6 +56,42 @@ const GlobalFeed = () => {
 
     const handleToArticleDetails = (slug) => {
         nav(`/article/${slug}`);
+    }
+
+    const handleFavorite = (favorite, slug) => {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken == null) {
+            nav("/users/login");
+        } else {
+            const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
+            const newData = {
+                article: {
+                    favoritesCount: favorite + 1
+                }
+            }
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${storedToken}`
+                },
+                body: JSON.stringify(newData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Cập nhật thành công:', data);
+                })
+                .catch(error => {
+                    console.error('Có lỗi xảy ra khi cập nhật:', error);
+                });
+        }
+
+
     }
     return (
         <div>
@@ -50,7 +108,7 @@ const GlobalFeed = () => {
                                     </div>
                                 </div>
                                 <div className={style.favorite}>
-                                    <button><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
+                                    <button onClick={() => handleFavorite(article.favoritesCount, article.slug)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
                                 </div>
                             </div>
                             <div className={style.articlePreview}>

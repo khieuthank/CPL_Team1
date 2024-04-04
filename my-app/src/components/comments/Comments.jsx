@@ -11,7 +11,10 @@ const Comments = () => {
     const [comments, setComments] = useState([]);
     const [commentBody, setCommentBody] = useState('');
     const [error, setError] = useState(null);
-    const [token, setToken] = useState('');
+
+
+    const token = localStorage.getItem('token');
+    // -------------------------------------
     useEffect(() => {
         const link = document.createElement('link');
         link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
@@ -23,19 +26,14 @@ const Comments = () => {
             document.head.removeChild(link);
         };
     }, []);
-    useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        if (storedToken) {
-            setToken(storedToken);
-            fetchUserData(storedToken); 
-        }
-    }, []);
 
+    // -------------------------------------
     useEffect(() => {
+        fetchUserData(token);
         fetchArticle();
         fetchCommentsWithAxios();
     }, [slug]);
-
+    // -------------------------------------
     const fetchArticle = () => {
         fetch(`https://api.realworld.io/api/articles/${slug}`)
             .then(response => response.json())
@@ -51,7 +49,7 @@ const Comments = () => {
                 setLoading(false);
             });
     };
-
+    // -------------------------------------
     const fetchCommentsWithAxios = () => {
         let config = {
             method: 'get',
@@ -61,20 +59,23 @@ const Comments = () => {
                 'Authorization': `Bearer ${token}`
             }
         };
+        console.log(token)
 
         axios.request(config)
             .then(response => {
                 setComments(response.data.comments);
+
             })
             .catch(error => {
                 setError(error.message);
             });
     };
-
+    console.log(comments);
+    // -------------------------------------
     const handleCommentChange = (e) => {
         setCommentBody(e.target.value);
     };
-
+    // -------------------------------------
     const handlePostComment = () => {
         fetch(`https://api.realworld.io/api/articles/${slug}/comments`, {
             method: 'POST',
@@ -102,7 +103,7 @@ const Comments = () => {
                 setError(error.message);
             });
     };
-
+    // -------------------------------------
     const handleDeleteComment = (commentId) => {
         fetch(`https://api.realworld.io/api/articles/${slug}/comments/${commentId}`, {
             method: 'DELETE',
@@ -120,24 +121,24 @@ const Comments = () => {
                 setError(error.message);
             });
     };
-// -------------------------------------
-const [image, setImage] = useState('');
-const fetchUserData = async (token) => {
-    try {
-        const response = await axios.get('https://api.realworld.io/api/user', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+    // -------------------------------------
+    const [image, setImage] = useState('');
+    const fetchUserData = async (token) => {
+        try {
+            const response = await axios.get('https://api.realworld.io/api/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
-        const userData = response.data.user;
-        setImage(userData.image);
+            const userData = response.data.user;
+            setImage(userData.image);
 
-    } catch (error) {
-        console.error('Fetching user data failed:', error);
-    }
-};
-// -------------------------------------
+        } catch (error) {
+            console.error('Fetching user data failed:', error);
+        }
+    };
+    // -------------------------------------
     return (
         <div className={style.containerCard}>
             <textarea

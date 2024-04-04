@@ -4,6 +4,7 @@ import axios from 'axios';
 import Settings from '../profile/Settings';
 import style from './Header.module.css';
 import Profile from '../profile/Profile';
+import { useAuth } from '../context/AuthContext';
 
 
 const Header = () => {
@@ -12,6 +13,7 @@ const Header = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [bio, setBio] = useState('');
+    const { isLoggedIn, handleLogout } = useAuth();
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
@@ -21,14 +23,14 @@ const Header = () => {
         }
     }, []);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        setToken('');
-        setImage('');
-        setUsername('');
-        setEmail('');
-        setBio('');
-    };
+    // const handleLogout = () => {
+    //     localStorage.removeItem('token');
+    //     setToken('');
+    //     setImage('');
+    //     setUsername('');
+    //     setEmail('');
+    //     setBio('');
+    // };
 
     const fetchUserData = async (token) => {
         try {
@@ -71,13 +73,13 @@ const Header = () => {
                         <li className="nav-item" style={{ marginLeft: '15px' }}>
                             <Link className="nav-link" to="/" >Home</Link>
                         </li>
-                        {token ? (
+                        {isLoggedIn ? (
                             <>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
                                     <Link className="nav-link" to="/settings">Settings</Link>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <Link className="nav-link" to="/new-article">New Article</Link>
+                                    <Link className="nav-link" to="/CreateArticles">New Article</Link>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
                                     <Link to={`/profile/${username}`} className="nav-link active">

@@ -78,9 +78,11 @@ const Profile = () => {
             <div className='body-profile'>
                 <div className='nav'>
                     <div className='nav-item ' >
+
                         <a>
                             My Articles
                         </a>  
+
                     </div>
                     <div className='nav-item '>
                         <Link to="favorites">
