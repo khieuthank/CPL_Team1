@@ -3,7 +3,7 @@ import style from './Articles.module.css';
 import { useState, useEffect } from 'react';
 import { formatDate } from '../../utils/utils';
 
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 
 const GlobalFeed = () => {
 
@@ -35,6 +35,42 @@ const GlobalFeed = () => {
     const handleToArticleDetails = (slug) => {
         nav(`/article/${slug}`);
     }
+
+    const handleFavorite = (favorite, slug) =>{
+        const storedToken = localStorage.getItem('token');
+        if(storedToken == null){
+            console.log(storedToken);
+            redirect('/users/login');
+        }else{
+            const apiUrl = `https://api.realworld.io/api/articles/${slug}/`;
+        const newData = {
+            article: {
+                favoritesCount: favorite + 1
+              }
+        }
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newData)
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Cập nhật thành công:', data);
+          })
+          .catch(error => {
+            console.error('Có lỗi xảy ra khi cập nhật:', error);
+          });
+        }
+        
+        
+    }
     return (
         <div>
             {
@@ -50,7 +86,7 @@ const GlobalFeed = () => {
                                     </div>
                                 </div>
                                 <div className={style.favorite}>
-                                    <button><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
+                                    <button onClick={() => handleFavorite(article.favoritesCount, article.slug)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
                                 </div>
                             </div>
                             <div className={style.articlePreview}>
