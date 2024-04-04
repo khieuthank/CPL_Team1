@@ -79,7 +79,7 @@ const Header = () => {
                                     <Link className="nav-link" to="/settings">Settings</Link>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <Link className="nav-link" to="/new-article">New Article</Link>
+                                    <Link className="nav-link" to="/CreateArticles">New Article</Link>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
                                     <Link to={`/profile/${username}`} className="nav-link active">
