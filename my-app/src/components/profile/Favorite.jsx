@@ -20,10 +20,10 @@ const Favorite = () => {
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
-            fetchUserData(storedToken);
-            fetchUserFavoriteArticles(username, storedToken);
+            fetchUserData(storedToken);      
         }
-    }, [username]);
+        fetchUserFavoriteArticles(username, storedToken);
+    }, [username, currentPage]);
 
     const fetchUserData = async (token) => {
         try {
@@ -32,7 +32,6 @@ const Favorite = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-
             const userData = response.data.user;
             setImage(userData.image);
             setUsername(userData.username);
@@ -45,7 +44,7 @@ const Favorite = () => {
 
     const fetchUserFavoriteArticles = async (username, token) => {
         try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?favorited=${username}`, {
+            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&favorited=kinkin`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -98,7 +97,6 @@ const Favorite = () => {
                 </div>
                 <div className={style.favoriteContainer}>
                     {favoritedArticles
-                        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                         .map((article) => (
                             <div className='article-item' key={article.slug}>
                                 <div className={style.article}>
