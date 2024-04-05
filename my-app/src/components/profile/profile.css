@@ -35,4 +35,8 @@
     .nav .nav-item{
         margin-left: 50px;
     }
+    .nav-item p {
+        background-color: white;
+        border: none;
+    }
 }

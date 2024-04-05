@@ -78,18 +78,21 @@ const Profile = () => {
             <div className='body-profile'>
                 <div className='nav'>
                     <div className='nav-item ' >
-                        <div>
-                        My Articles
-                        
-                        </div>
-                        
+
+                        <a>
+                            My Articles
+                        </a>  
+
                     </div>
                     <div className='nav-item '>
-                        <div>
-                        Favorited Articles
-                        </div>
+                        <Link to="favorites">
+                            <a>
+                                Favorited Articles
+                            </a>
+                        </Link>
                     </div>
                 </div>
+                
             </div>
         </div>
     );
