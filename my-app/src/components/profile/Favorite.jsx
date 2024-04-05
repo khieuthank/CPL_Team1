@@ -44,14 +44,14 @@ const Favorite = () => {
 
     const fetchUserFavoriteArticles = async (username, token) => {
         try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&favorited=kinkin`, {
+            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&favorited=${username}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
 
             setFavoritedArticles(response.data.articles);
-            setTotalPages(Math.ceil(response.data.articles.length / itemsPerPage));
+            setTotalPages(Math.ceil(response.data.articlesCount / itemsPerPage));
         } catch (error) {
             console.error('Fetching user favorite articles failed:', error);
         }
