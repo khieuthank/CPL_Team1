@@ -1,0 +1,36 @@
+.containerCard {
+      border-radius: 5px; 
+    padding: 0px 16px 16px 16px; 
+    width: 100%;
+    margin-right: 25%;
+    margin-left: 25%;
+}
+
+
+
+textarea {
+    width: calc(100% - 4px); 
+    min-height: 100px;
+    padding: 8px 8px 20px 8px; 
+}
+
+.cardFooter {
+    display: flex;
+    justify-content: space-between; 
+    background-color: rgb(245, 245, 245);
+    padding: 10px 0px 10px 0px;
+}
+
+.cardFooter button {
+    padding: 4px 4px;
+    background-color: rgb(92, 184, 92);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.cardFooter button:hover {
+    background-color: rgb(60, 135, 60);
+}

@@ -1,54 +1,65 @@
 import React from 'react';
 import style from './Articles.module.css';
 import { useState, useEffect } from 'react';
-import { formatDate } from '../../utils/utils';
-import { useNavigate } from 'react-router-dom';
+
+import ArticlesTag from './ArticlesTag';
+import GlobalFeed from './GlobalFeed';
+import YourFeed from './YourFeed';
+import { useAuth } from '../context/AuthContext';
 
 
 const Articles = () => {
 
+    const { isLoggedIn } = useAuth();
+
     const [tags, setTags] = useState([]);
     const [isloadTag, setIsLoadTag] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [articles, setArticles] = useState([]);
-    const [isloadArticles, setIsLoadArticles] = useState(true);
-    const [totalPages, setTotalPages] = useState(1);
+    const [tagSelect, setTagSelect] = useState(null);
+    const [isPage, setIsPage] = useState('globalfeed');
+    const [token, setToken] = useState(null);
 
-    const nav = useNavigate();
-
-    const itemsPerPage = 10;
+    console.log(' logger' + isLoggedIn);
 
     useEffect(() => {
         const apiUrl = 'https://api.realworld.io/api/tags';
         fetch(apiUrl)
-          .then(response => response.json())
-          .then(data => {
-            setTags(data);
-            setIsLoadTag(false);
-        })
-          .catch(error => console.error('Error fetching tags:', error));
-      }, []);
+            .then(response => response.json())
+            .then(data => {
+                setTags(data);
+                setIsLoadTag(false);
+            })
+            .catch(error => console.error('Error fetching tags:', error));
+    }, []);
 
-      useEffect(() => {
-        const apiUrl = `https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}`;
-        fetch(apiUrl)
-          .then(response => response.json())
-          .then(data => {
-            setArticles(data.articles);
-            setTotalPages(Math.ceil(data.articlesCount / itemsPerPage));
-            setIsLoadArticles(false);
-        })
-          .catch(error => console.error('Error fetching tags:', error));
-      }, [currentPage]);
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+            setToken(storedToken);
+            setIsPage('yourfeed');
+        }
+        else{
+            setIsPage('globalfeed');
+        }
+    
+    }, [isLoggedIn]);
 
-      const handlePageChange = (page) => {
-        setCurrentPage(page);
-      };
+    const handleClickTags = (tag) => {
+        setTagSelect(tag);
+        setIsPage('tagfeed');
+    }
 
-      const handleToArticleDetails = (slug) => {
-        nav(`/article/${slug}`);
-      }
+    const handleToPage = (page) =>{
+        if(page === 'yourfeed'){
+            setIsPage('yourfeed');
+        }
+        if(page === 'globalfeed'){
+            setIsPage('globalfeed');
+        }
+        if(page === 'tagfeed'){
+            setIsPage('tagfeed');
+        }
 
+    }
 
     return (
         <div className={style.container}>
@@ -60,55 +71,20 @@ const Articles = () => {
                 <div className='row'>
                     <div className='col-md-9'>
                         <div className={style.titleGlobal}>
-                            <a href="">Global Feed</a>
+                            {isLoggedIn && (<a className={isPage === 'yourfeed' ? style.aActive : ''} onClick={() => handleToPage('yourfeed')}>Your feed</a>)}
+                            <a className={isPage === 'globalfeed' ? style.aActive : ''} onClick={() => handleToPage('globalfeed')}>Global Feed</a>
+                            {tagSelect !== null && (<a className={isPage === 'tagfeed' ? style.aActive : ''} onClick={() => handleToPage('tagfeed')}>#{tagSelect}</a>)}
                         </div>
                         {
-                            isloadArticles ? (<p>Loading...</p>) : (
-                                articles.map(article => (
-                                    <div className={style.article}>
-                                    <div className={style.articleInfo}>
-                                        <div className={style.info}>
-                                            <img src={article.author.image} alt="" />
-                                            <div className={style.infoDetails}>
-                                                <a href="">{article.author.username }</a>
-                                                <p>{formatDate(article.createdAt)}</p>
-                                            </div>
-                                        </div>
-                                        <div className={style.favorite}>
-                                            <button><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
-                                        </div>
-                                    </div>
-                                    <div className={style.articlePreview}>
-                                        <div className={style.content} onClick={() => handleToArticleDetails(article.slug)}>
-                                            <h5>{article.title}</h5>
-                                            <p>{article.description}</p>
-                                        </div>
-                                        <div className={style.more}>
-                                            <div className={style.readmore} onClick={() => handleToArticleDetails(article.slug)}>Read more...</div>
-                                            <div className={style.articleTag}>
-                                              {
-                                                article.tagList.map((tag, index) => (
-                                                    <li key={index}>{tag}</li>
-                                                ))
-                                              }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>        
-                                ))
-                            )
+                            <div className={isPage == 'tagfeed' ? null : style.disable}><ArticlesTag tag={tagSelect}></ArticlesTag></div>
                         }
-                       
-                        <div className={style.page}>
-                            {
-                                Array.from({ length: totalPages }, (_, index) => (
-                                    <li key={index + 1} onClick={() => handlePageChange(index + 1)} className={currentPage === index + 1 ? style.activePage : null}>
-                                      {index + 1}
-                                    </li>
-                                  ))
-                            }
-                            
-                        </div>
+                        {
+                            <div className={isPage == 'globalfeed' ? null : style.disable}><GlobalFeed></GlobalFeed></div>
+                        }
+                        {
+                             <div className={isPage == 'yourfeed' ? null : style.disable}><YourFeed></YourFeed></div>
+                        }
+
                     </div>
                     <div className='col-md-3'>
                         <div className={style.tags}>
@@ -118,20 +94,19 @@ const Articles = () => {
                             {
                                 isloadTag ? (<p>Loading...</p>) : (
                                     <div className={style.listTag}>
-                                {
-                                    tags.tags.map((tag, index) => (
-                                        <a key={index} href="">{tag}</a>
-                                      ))
-                                }
-                            </div>
+                                        {
+                                            tags.tags.map((tag, index) => (
+                                                <a key={index} className={tag === tagSelect ? style.tagSelected : null} onClick={() => handleClickTags(tag)}>{tag}</a>
+                                            ))
+                                        }
+                                    </div>
                                 )
                             }
-                            
                         </div>
                     </div>
                 </div>
             </div>
-            
+
         </div>
     );
 };

@@ -26,6 +26,7 @@
 .articleButton {
     display: flex; 
     align-items: center;
+
 }
 
 
@@ -49,7 +50,7 @@
     border: 1px solid rgb(92, 184, 92);
     border-radius: 5px;
     color: rgb(92, 184, 92);
-    width: 200px;
+    width: 230px;
     background-color: #333;
 }
 
@@ -58,9 +59,19 @@
     border: 1px solid rgb(204, 204, 204);
     border-radius: 5px;
     color: rgb(204, 204, 204);
-    width: 200px;
+    width: 230px;
     background-color: #333;
     margin-right: 5px;
+}
+
+.followActive{
+    background-color: rgb(218, 218, 218);
+    color: black;
+}
+
+.faActive{
+    background-color: rgb(0, 162, 0);
+    color: white;
 }
 
 .buttonFollow:hover {
@@ -142,3 +153,13 @@
 .containerDescription {
     margin-bottom: 4px;
 }
+
+/* -------------- */
+.linkSign p {
+    display: inline-block;
+}
+
+.commentSign {
+   margin-left: 10%;
+   margin-right: 10%;
+ }
