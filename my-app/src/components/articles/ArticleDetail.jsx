@@ -7,7 +7,7 @@ const ArticleDetail = () => {
 
 
     const { slug } = useParams();
-    console.log(slug);
+    
     // ------------------------------------------------------------------
     const [article, setArticle] = useState({});
     const [loading, setLoading] = useState(true);
