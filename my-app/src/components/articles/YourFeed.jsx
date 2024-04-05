@@ -29,9 +29,9 @@ const YourFeed = () => {
 
     const fetchUserYourFeed = async (username, token) => {
         try {
-            const response = await axios.get(`https://api.realworld.io/api/articles/feed?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}`, {
+            const response = await axios.get(https://api.realworld.io/api/articles/feed?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: Bearer ${token}
                 }
             });
 
@@ -43,7 +43,7 @@ const YourFeed = () => {
     };
 
     const handleToArticleDetails = (slug) => {
-        nav(`/article/${slug}`);
+        nav(/article/${slug});
     }
 
     const handlePageChange = (page) => {
