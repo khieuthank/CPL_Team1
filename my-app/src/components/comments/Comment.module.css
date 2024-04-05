@@ -1,9 +1,8 @@
 .containerCard {
-      border-radius: 5px; 
+    max-width: 700px;     
+    margin-left: 9.2%;
+    border-radius: 5px; 
     padding: 0px 16px 16px 16px; 
-    width: 100%;
-    margin-right: 25%;
-    margin-left: 25%;
 }
 
 
