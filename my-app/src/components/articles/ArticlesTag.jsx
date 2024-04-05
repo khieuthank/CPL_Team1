@@ -48,19 +48,24 @@ const ArticlesTag = ({ tag }) => {
         
     }, [currentPage, tag]);
 
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
 
     const handleToArticleDetails = (slug) => {
         nav(`/article/${slug}`);
     }
     
+
     const handleFavorite = (favorite, slug, isFavorite) => {
+
         const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
         if (storedToken == null) {
             nav("/users/login");
         } else {
+
             const newData = {
                 article: {
                     favoritesCount: isFavorite ? favorite - 1 : favorite + 1
@@ -101,6 +106,7 @@ const ArticlesTag = ({ tag }) => {
         }
     };
 
+
     return (
         <div>
             {
@@ -116,7 +122,9 @@ const ArticlesTag = ({ tag }) => {
                                     </div>
                                 </div>
                                 <div className={style.favorite}>
+
                                     <button className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavorite(article.favoritesCount, article.slug, article.favorited)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
+
                                 </div>
                             </div>
                             <div className={style.articlePreview}>

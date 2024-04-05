@@ -58,11 +58,14 @@ const GlobalFeed = () => {
         nav(`/article/${slug}`);
     }
 
+
     const handleFavorite = (favorite, slug, isFavorite) => {
+
         const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
         if (storedToken == null) {
             nav("/users/login");
         } else {
+
             const newData = {
                 article: {
                     favoritesCount: isFavorite ? favorite - 1 : favorite + 1
@@ -79,9 +82,11 @@ const GlobalFeed = () => {
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
+
                     }
-                    return response.json();
+              return response.json();
                 })
+
                 .then(data => {
                     console.log(data);
                     setArticles(articles => {
@@ -100,6 +105,8 @@ const GlobalFeed = () => {
                 .catch(error => {
                     console.error('Error occurred while updating favorite:', error);
                 });
+
+                  
         }
     };
     return (
@@ -119,6 +126,7 @@ const GlobalFeed = () => {
                                 <div className={style.favorite}>
                                 <button className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavorite(article.favoritesCount, article.slug, article.favorited)}>
                                         <i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
+
                                 </div>
                             </div>
                             <div className={style.articlePreview}>
