@@ -68,7 +68,7 @@ const Profile = () => {
 
     const fetchUserYourArticles = async (username, token) => {
         try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&author=kinkin`, {
+            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&author=${username}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

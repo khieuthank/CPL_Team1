@@ -5,6 +5,7 @@ import './profile.css';
 import style from './Favorite.module.css';
 import { formatDate } from '../../utils/utils';
 import { useNavigate } from 'react-router-dom';
+
 const Favorite = () => {
     const itemsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
@@ -44,14 +45,14 @@ const Favorite = () => {
 
     const fetchUserFavoriteArticles = async (username, token) => {
         try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&favorited=kinkin`, {
+            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&favorited=${username}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
 
             setFavoritedArticles(response.data.articles);
-            setTotalPages(Math.ceil(response.data.articles.length / itemsPerPage));
+            setTotalPages(Math.ceil(response.data.articlesCount / itemsPerPage));
         } catch (error) {
             console.error('Fetching user favorite articles failed:', error);
         }
@@ -64,6 +65,7 @@ const Favorite = () => {
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
     return (
         <div className='profile'>
             <div className='banner-profile'>
@@ -84,7 +86,7 @@ const Favorite = () => {
                     </Link>
                 </div>
             </div>
-            <div className='body-profile' >
+            <div className='body-profile'>
                 <div className={style.navList}>
                     <div className={style.navItemArticles}>
                         <Link to={`/profile/${username}`}>
@@ -139,11 +141,9 @@ const Favorite = () => {
                                 </li>
                             ))
                         }
-
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };
