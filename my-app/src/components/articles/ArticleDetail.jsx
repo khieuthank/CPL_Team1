@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import style from './ArticleDetail.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Comment from '../comments/Comments'
 const ArticleDetail = () => {
 
@@ -13,15 +13,19 @@ const ArticleDetail = () => {
     const [loading, setLoading] = useState(true);
     const [tags, setTags] = useState([]);
     const [error, setError] = useState(null);
-    const [token, setToken] = useState('');
+    const [user, setUser] = useState({});
+
+    const token = localStorage.getItem('token');
+
+    const nav = useNavigate();
+
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        if (storedToken) {
-            setToken(storedToken);
-        }
-    }, []);
-    useEffect(() => {
-        fetch(`https://api.realworld.io/api/articles/${slug}`)
+        if(token){
+            fetch(`https://api.realworld.io/api/articles/${slug}`, {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch article');
@@ -37,7 +41,52 @@ const ArticleDetail = () => {
                 setError(error.message);
 
             });
+            
+        }else{
+            fetch(`https://api.realworld.io/api/articles/${slug}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch article');
+
+                }
+                return response.json();
+            })
+            .then(data => {
+                setArticle(data.article);
+                setLoading(false);
+            })
+            .catch(error => {
+                setError(error.message);
+
+            });
+        }
+        
     }, []);
+
+    useEffect(() => {
+        if (token && !loading) {
+            fetch(`https://api.realworld.io/api/profiles/${article.author.username}`, {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch article');
+
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setUser(data.profile);
+                    console.log(data);
+                })
+                .catch(error => {
+                    setError(error.message);
+
+                });
+        }
+    }, [loading]);
 
 
     // --------------------------------------------------------------
@@ -53,15 +102,116 @@ const ArticleDetail = () => {
         };
     }, []);
     // -------------------------------------------------------------------------
-    const [isFollowing, setIsFollowing] = useState(false);
-    const [isFavorited, setIsFavorited] = useState(false);
+
     const handleFollowClick = () => {
-        setIsFollowing(prevState => !prevState);
+        if (token == null) {
+            nav("/users/login");
+        }
+        else {
+            if (user.following) {
+                fetch(`https://api.realworld.io/api/profiles/${article.author.username}/follow`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Token ${token}`
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch article');
+
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        setUser(data.profile);
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        setError(error.message);
+
+                    });
+            }else{
+                const profileData = {
+                    profile: {
+                      following: true
+                    }
+                  };
+
+                fetch(`https://api.realworld.io/api/profiles/${article.author.username}/follow`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Token ${token}`
+                    },
+                    body: JSON.stringify(profileData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch article');
+
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        setUser(data.profile);
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        setError(error.message);
+
+                    });
+            }
+        }
     };
-    const handleFavoriteClick = () => {
-        const newFavoritesCount = isFavorited ? article.favoritesCount - 1 : article.favoritesCount + 1;
-        setIsFavorited(prevState => !prevState);
-        setArticle(prevArticle => ({ ...prevArticle, favoritesCount: newFavoritesCount }));
+
+    const handleFavoriteClick = (slug) => {
+        const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
+        if(article.favorited){
+            fetch(apiUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setArticle(data.article)
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error occurred while updating favorite:', error);
+                });
+        }else{
+            const newData = {
+                article: {
+                    favoritesCount: article.favoritesCount + 1
+                }
+            }
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                },
+                body: JSON.stringify(newData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setArticle(data.article)
+                })
+                .catch(error => {
+                    console.error('Có lỗi xảy ra khi cập nhật:', error);
+                });
+        }
     };
     // ----------------------------------------------------------------------------------------------
     return (
@@ -89,11 +239,11 @@ const ArticleDetail = () => {
                                 <div className={style.articleButton}>
                                     {token ? (
                                         <>
-                                            <button className={style.buttonFollow} onClick={handleFollowClick}>
-                                                <i className="fa-solid fa-plus"></i> {isFollowing ? 'Unfollow' : 'Follow'} Maksim Esteban
+                                            <button className={`${style.buttonFollow} ${user.following ? style.followActive : ''}`} onClick={handleFollowClick}>
+                                                <i className="fa-solid fa-plus"></i> {user.following ? 'Unfollow' : 'Follow'} {article.author.username}
                                             </button>
-                                            <button className={style.buttonFavorite} onClick={handleFavoriteClick}>
-                                                <i className="fa-solid fa-heart"></i> {isFavorited ? 'Unfavorite' : 'Favorite'} Article ({article.favoritesCount})
+                                            <button className={`${style.buttonFavorite} ${article.favorited ? style.faActive : ''}`} onClick={() => handleFavoriteClick(article.slug)}>
+                                                <i className="fa-solid fa-heart"></i> {article.favorited ? 'Unfavorite' : 'Favorite'} Article ({article.favoritesCount})
                                             </button>
                                         </>
                                     ) : (
