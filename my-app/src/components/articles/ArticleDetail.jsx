@@ -266,19 +266,14 @@ const ArticleDetail = () => {
                                 <li key={tag} className={style.tagItem}>{tag}</li>
                             ))}
                         </ul>
+                        <div className={style.linkSign}>
 
-                        <div className={`d-flex justify-content-center align-items-center`}>
                             {token ? (
                                 <Comment></Comment>
                             ) : (
-                                <div className={`d-flex flex-column align-items-center ${style.linkSign}`}>
-                                    <>
-                                        <Link to="/users/login" className="btn btn-primary">Sign In</Link>
-                                        <span className="mx-2">or</span>
-                                        <Link to="/users/register" className="btn btn-secondary">Sign Up</Link>
-                                        <span>to add comments on this article</span>
-                                    </>
-                                </div>
+                                <>
+                                    <Link to="/users/login">Sign In</Link> or <Link to="/users/register">Sign Up</Link> to add comments on this article
+                                </>
                             )}
                         </div>
 
