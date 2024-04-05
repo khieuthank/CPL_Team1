@@ -19,11 +19,13 @@ const YourFeed = () => {
 
     const nav = useNavigate();
 
+
     const storedToken = localStorage.getItem('token');
 
     useEffect(() => {
         const apiUrl = `https://api.realworld.io/api/articles/feed?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}`;
         
+
         if (storedToken) {
             fetch(apiUrl, {
                 headers: {
@@ -49,6 +51,7 @@ const YourFeed = () => {
     };
 
     const handleFavorite = (favorite, slug, isFavorite) => {
+
         const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
         if (storedToken == null) {
             nav("/users/login");
@@ -93,6 +96,8 @@ const YourFeed = () => {
         }
     };
 
+           
+
     return (
         <div>
             {
@@ -107,8 +112,9 @@ const YourFeed = () => {
                                         <p>{formatDate(article.createdAt)}</p>
                                     </div>
                                 </div>
-                                <div className={style.favorite}>
+
                                     <button id={'fe' + index} className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavorite(article.favoritesCount, article.slug, article.favorited)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
+
                                 </div>
                             </div>
                             <div className={style.articlePreview}>
