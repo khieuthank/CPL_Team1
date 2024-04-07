@@ -15,6 +15,7 @@ import Favorite from './components/profile/Favorite';
 
 import { AuthProvider } from './components/context/AuthContext';
 import CreateArticles from './components/articles/CreateArticles';
+import EditArticle from './components/articles/EditArticle';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
     <Route path="/profile/:username/favorites" element={<Favorite></Favorite>}/>
 
     <Route path="/CreateArticles" element={<CreateArticles></CreateArticles>}/>
+    <Route path="/edit/:slug" element={<EditArticle></EditArticle>}/>
 
     </Routes>
     <Footer></Footer>
