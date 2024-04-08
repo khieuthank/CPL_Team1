@@ -94,6 +94,7 @@ const Favorite = () => {
         setCurrentPage(page);
     };
 
+
     const isArticleFavorited = (article) => {
         return article.favorited;
     };
@@ -117,6 +118,7 @@ const Favorite = () => {
             );
         }
     };
+
 
     return (
         <div className='profile'>
@@ -181,11 +183,13 @@ const Favorite = () => {
                         </div>
                     ))}
                     <div className={style.page}>
+
                         {Array.from({ length: totalPages }, (_, index) => (
                             <li key={index + 1} onClick={() => handlePageChange(index + 1)} className={currentPage === index + 1 ? style.activePage : null}>
                                 {index + 1}
                             </li>
                         ))}
+
                     </div>
                 </div>
             </div>
