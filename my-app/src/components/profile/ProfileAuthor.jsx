@@ -18,7 +18,7 @@ const Profile = () => {
     const [bio, setBio] = useState('');
     const [articles, setArticles] = useState([]);
     const [myArticles, setMyArticles] = useState([]);
-    const [favoritedArticles, setFavoritedArticles] = useState([]);
+    const [following, setFollowing] = useState(false);  // Thêm state để lưu trạng thái theo dõi
     const nav = useNavigate();
 
     useEffect(() => {
@@ -27,36 +27,23 @@ const Profile = () => {
             fetchUserData(storedToken);
         }
         fetchUserYourArticles(username, storedToken);
-        fetchUserFavoriteArticles(username, storedToken);
     }, [username, currentPage]);
 
     const fetchUserData = async (token) => {
         try {
-            const response = await axios.get('https://api.realworld.io/api/user', {
+            const response = await axios.get(`https://api.realworld.io/api/profiles/${username}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            const userData = response.data.user;
+            const userData = response.data.profile;
             setImage(userData.image);
             setUsername(userData.username);
             setEmail(userData.email);
             setBio(userData.bio);
+            setFollowing(userData.following);  // Lưu trạng thái theo dõi từ API
         } catch (error) {
             console.error('Fetching user data failed:', error);
-        }
-    };
-
-    const fetchUserArticles = async (token) => {
-        try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?author=${username}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setArticles(response.data.articles);
-        } catch (error) {
-            console.error('Fetching user articles failed:', error);
         }
     };
 
@@ -74,19 +61,6 @@ const Profile = () => {
         }
     };
 
-    const fetchUserFavoriteArticles = async (username, token) => {
-        try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?favorited=${username}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setFavoritedArticles(response.data.articles);
-        } catch (error) {
-            console.error('Fetching favorited articles failed:', error);
-        }
-    };
-
     const handleToArticleDetails = (slug) => {
         nav(`/article/${slug}`);
     };
@@ -95,35 +69,30 @@ const Profile = () => {
         setCurrentPage(page);
     };
 
-    const isArticleFavorited = (article) => {
-        return favoritedArticles.some(favArticle => favArticle.slug === article.slug);
-    };
-
-    const favoriteArticle = async (slug) => {
+    const handleFollowClick = () => {
         const storedToken = localStorage.getItem('token');
-        try {
-            await axios.post(`https://api.realworld.io/api/articles/${slug}/favorite`, {}, {
+        if (!storedToken) {
+            nav("/users/login");
+        } else {
+            const apiUrl = following
+                ? `https://api.realworld.io/api/profiles/${username}/follow`
+                : `https://api.realworld.io/api/profiles/${username}/follow`;
+
+            const method = following ? 'DELETE' : 'POST';
+
+            axios({
+                method: method,
+                url: apiUrl,
                 headers: {
                     Authorization: `Bearer ${storedToken}`
                 }
+            })
+            .then(response => {
+                setFollowing(!following);  // Đảo ngược trạng thái theo dõi
+            })
+            .catch(error => {
+                console.error('Error occurred while toggling follow:', error);
             });
-            fetchUserFavoriteArticles(username, storedToken);
-        } catch (error) {
-            console.error('Favoriting article failed:', error);
-        }
-    };
-
-    const unfavoriteArticle = async (slug) => {
-        const storedToken = localStorage.getItem('token');
-        try {
-            await axios.delete(`https://api.realworld.io/api/articles/${slug}/favorite`, {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`
-                }
-            });
-            fetchUserFavoriteArticles(username, storedToken);
-        } catch (error) {
-            console.error('Unfavoriting article failed:', error);
         }
     };
 
@@ -131,7 +100,7 @@ const Profile = () => {
         <div className='profile'>
             <div className='banner-profile'>
                 <div className='image-profile'>
-                    <img src={image} alt="User" />
+                    <img src={image} alt="User"></img>
                 </div>
                 <div className='username'>
                     {usernameState}
@@ -140,11 +109,9 @@ const Profile = () => {
                     {bio}
                 </div>
                 <div className='button-banner'>
-                    <Link to="/settings">
-                        <button>
-                            Edit profile setting
-                        </button>
-                    </Link>
+                    <button onClick={handleFollowClick}>
+                        {following ? 'Unfollow' : 'Follow'}
+                    </button>
                 </div>
             </div>
             <div className='body-profile'>
@@ -162,6 +129,7 @@ const Profile = () => {
                         </Link>
                     </div>
                 </div>
+
                 <div className={style.favoriteContainer}>
                     {myArticles.map((article) => (
                         <div className='article-item' key={article.slug}>
@@ -175,15 +143,7 @@ const Profile = () => {
                                         </div>
                                     </div>
                                     <div className={style.favorite}>
-                                        {isArticleFavorited(article) ? (
-                                            <button style={{ backgroundColor:'green' }} onClick={() => unfavoriteArticle(article.slug)}>
-                                                <i className="fa-solid fa-heart" style={{ color:'white' }}></i> {article.favoritesCount}
-                                            </button>
-                                        ) : (
-                                            <button onClick={() => favoriteArticle(article.slug)}>
-                                                <i className="fa-solid fa-heart"></i> {article.favoritesCount}
-                                            </button>
-                                        )}
+                                        <button><i className="fa-solid fa-heart"></i> {article.favoritesCount}</button>
                                     </div>
                                 </div>
                                 <div className={style.articlePreview}>

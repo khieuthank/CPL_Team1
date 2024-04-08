@@ -3,7 +3,7 @@ import style from './Articles.module.css';
 import { useState, useEffect } from 'react';
 import { formatDate } from '../../utils/utils';
 import { useAuth } from '../context/AuthContext';
-
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const YourFeed = () => {
@@ -19,13 +19,9 @@ const YourFeed = () => {
 
     const nav = useNavigate();
 
-
-    const storedToken = localStorage.getItem('token');
-
     useEffect(() => {
         const apiUrl = `https://api.realworld.io/api/articles/feed?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}`;
-        
-
+        const storedToken = localStorage.getItem('token');
         if (storedToken) {
             fetch(apiUrl, {
                 headers: {
@@ -50,53 +46,66 @@ const YourFeed = () => {
         setCurrentPage(page);
     };
 
-    const handleFavorite = (favorite, slug, isFavorite) => {
-
+    const handleFavorite = (favorite, slug, index) => {
+        const favoriteCountElement = document.querySelector(`#fe${index}`);
+        const storedToken = localStorage.getItem('token');
         const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
         if (storedToken == null) {
             nav("/users/login");
         } else {
-            const newData = {
-                article: {
-                    favoritesCount: isFavorite ? favorite - 1 : favorite + 1
-                }
-            };
-            fetch(apiUrl, {
-                method: isFavorite ? 'DELETE' : 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${storedToken}`
-                },
-                body: JSON.stringify(newData)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+            console.log(favoriteCountElement.classList);
+            if (favoriteCountElement.classList.value == '') {
+                const newData = {
+                    article: {
+                        favoritesCount: favorite + 1
                     }
-                    return response.json();
+                }
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${storedToken}`
+                    },
+                    body: JSON.stringify(newData)
                 })
-                .then(data => {
-                    console.log(data);
-                    setArticles(articles => {
-                        return articles.map(article => {
-                            if (article.slug === slug) {
-                                return {
-                                    ...article,
-                                    favorited: !isFavorite,
-                                    favoritesCount: isFavorite ? article.favoritesCount - 1 : article.favoritesCount + 1
-                                };
-                            }
-                            return article;
-                        });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        favoriteCountElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.article.favoritesCount}`;
+                        favoriteCountElement.classList.add(style.btnAdd);
+                    })
+                    .catch(error => {
+                        console.error('Có lỗi xảy ra khi cập nhật:', error);
                     });
+            } else {
+                fetch(apiUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Token ${storedToken}`
+                    }
                 })
-                .catch(error => {
-                    console.error('Error occurred while updating favorite:', error);
-                });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        favoriteCountElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.article.favoritesCount}`;
+                        favoriteCountElement.classList.remove(style.btnAdd);
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        console.error('Error occurred while updating favorite:', error);
+                    });
+            }
         }
-    };
+    }
 
-           
 
     return (
         <div>
@@ -108,13 +117,12 @@ const YourFeed = () => {
                                 <div className={style.info}>
                                     <img src={article.author.image} alt="" />
                                     <div className={style.infoDetails}>
-                                        <a href="">{article.author.username}</a>
+                                    <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
                                         <p>{formatDate(article.createdAt)}</p>
                                     </div>
                                 </div>
-
-                                    <button id={'fe' + index} className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavorite(article.favoritesCount, article.slug, article.favorited)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
-
+                                <div className={style.favorite}>
+                                    <button id={'fe' + index} className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavorite(article.favoritesCount, article.slug, index)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
                                 </div>
                             </div>
                             <div className={style.articlePreview}>

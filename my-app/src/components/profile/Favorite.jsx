@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import './profile.css';
+import style from './Favorite.module.css';
 import { formatDate } from '../../utils/utils';
 import { useNavigate } from 'react-router-dom';
-import style from './Profile.module.css';
 
-const Profile = () => {
+const Favorite = () => {
     const itemsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -14,10 +14,7 @@ const Profile = () => {
     const { username } = useParams();
     const [image, setImage] = useState('');
     const [usernameState, setUsername] = useState('');
-    const [email, setEmail] = useState('');
     const [bio, setBio] = useState('');
-    const [articles, setArticles] = useState([]);
-    const [myArticles, setMyArticles] = useState([]);
     const [favoritedArticles, setFavoritedArticles] = useState([]);
     const nav = useNavigate();
 
@@ -26,7 +23,6 @@ const Profile = () => {
         if (storedToken) {
             fetchUserData(storedToken);
         }
-        fetchUserYourArticles(username, storedToken);
         fetchUserFavoriteArticles(username, storedToken);
     }, [username, currentPage]);
 
@@ -40,69 +36,17 @@ const Profile = () => {
             const userData = response.data.user;
             setImage(userData.image);
             setUsername(userData.username);
-            setEmail(userData.email);
             setBio(userData.bio);
+
         } catch (error) {
             console.error('Fetching user data failed:', error);
         }
     };
 
-    const fetchUserArticles = async (token) => {
-        try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?author=${username}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setArticles(response.data.articles);
-        } catch (error) {
-            console.error('Fetching user articles failed:', error);
-        }
-    };
-
-    const fetchUserYourArticles = async (username, token) => {
-        try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&author=${username}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setMyArticles(response.data.articles);
-            setTotalPages(Math.ceil(response.data.articlesCount / itemsPerPage));
-        } catch (error) {
-            console.error('Fetching my articles failed:', error);
-        }
-    };
-
-    const fetchUserFavoriteArticles = async (username, token) => {
-        try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?favorited=${username}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setFavoritedArticles(response.data.articles);
-        } catch (error) {
-            console.error('Fetching favorited articles failed:', error);
-        }
-    };
-
-    const handleToArticleDetails = (slug) => {
-        nav(`/article/${slug}`);
-    };
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-
-    const isArticleFavorited = (article) => {
-        return favoritedArticles.some(favArticle => favArticle.slug === article.slug);
-    };
-
     const favoriteArticle = async (slug) => {
         const storedToken = localStorage.getItem('token');
         try {
-            await axios.post(`https://api.realworld.io/api/articles/${slug}/favorite`, {}, {
+            const response = await axios.post(`https://api.realworld.io/api/articles/${slug}/favorite`, {}, {
                 headers: {
                     Authorization: `Bearer ${storedToken}`
                 }
@@ -116,7 +60,7 @@ const Profile = () => {
     const unfavoriteArticle = async (slug) => {
         const storedToken = localStorage.getItem('token');
         try {
-            await axios.delete(`https://api.realworld.io/api/articles/${slug}/favorite`, {
+            const response = await axios.delete(`https://api.realworld.io/api/articles/${slug}/favorite`, {
                 headers: {
                     Authorization: `Bearer ${storedToken}`
                 }
@@ -126,6 +70,55 @@ const Profile = () => {
             console.error('Unfavoriting article failed:', error);
         }
     };
+
+    const fetchUserFavoriteArticles = async (username, token) => {
+        try {
+            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&favorited=${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            setFavoritedArticles(response.data.articles);
+            setTotalPages(Math.ceil(response.data.articlesCount / itemsPerPage));
+        } catch (error) {
+            console.error('Fetching user favorite articles failed:', error);
+        }
+    };
+
+    const handleToArticleDetails = (slug) => {
+        nav(`/article/${slug}`);
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+
+    const isArticleFavorited = (article) => {
+        return article.favorited;
+    };
+
+    const FavoriteButton = ({ article }) => {
+        if (isArticleFavorited(article)) {
+            return (
+                <div className={style.favorite}>
+                    <button onClick={() => unfavoriteArticle(article.slug)} style={{ backgroundColor: 'green' }}>
+                        <i className="fa-solid fa-heart"></i> {article.favoritesCount}
+                    </button>
+                </div>
+            );
+        } else {
+            return (
+                <div className={style.favorite}>
+                    <button onClick={() => favoriteArticle(article.slug)} style={{ backgroundColor: 'white' }}>
+                        <i className="fa-solid fa-heart"></i> {article.favoritesCount}
+                    </button>
+                </div>
+            );
+        }
+    };
+
 
     return (
         <div className='profile'>
@@ -150,20 +143,16 @@ const Profile = () => {
             <div className='body-profile'>
                 <div className={style.navList}>
                     <div className={style.navItemArticles}>
-                        <a>
-                            My Articles
-                        </a>
+                        <Link to={`/profile/${username}`}>
+                            <a>My Articles</a>
+                        </Link>
                     </div>
                     <div className={style.navItemFarvorite}>
-                        <Link to="favorites">
-                            <a>
-                                Favorited Articles
-                            </a>
-                        </Link>
+                        <a>Favorited Articles</a>
                     </div>
                 </div>
                 <div className={style.favoriteContainer}>
-                    {myArticles.map((article) => (
+                    {favoritedArticles.map((article) => (
                         <div className='article-item' key={article.slug}>
                             <div className={style.article}>
                                 <div className={style.articleInfo}>
@@ -174,17 +163,7 @@ const Profile = () => {
                                             <p>{formatDate(article.createdAt)}</p>
                                         </div>
                                     </div>
-                                    <div className={style.favorite}>
-                                        {isArticleFavorited(article) ? (
-                                            <button style={{ backgroundColor:'green' }} onClick={() => unfavoriteArticle(article.slug)}>
-                                                <i className="fa-solid fa-heart" style={{ color:'white' }}></i> {article.favoritesCount}
-                                            </button>
-                                        ) : (
-                                            <button onClick={() => favoriteArticle(article.slug)}>
-                                                <i className="fa-solid fa-heart"></i> {article.favoritesCount}
-                                            </button>
-                                        )}
-                                    </div>
+                                    <FavoriteButton article={article} />
                                 </div>
                                 <div className={style.articlePreview}>
                                     <div className={style.content} onClick={() => handleToArticleDetails(article.slug)}>
@@ -204,11 +183,13 @@ const Profile = () => {
                         </div>
                     ))}
                     <div className={style.page}>
+
                         {Array.from({ length: totalPages }, (_, index) => (
                             <li key={index + 1} onClick={() => handlePageChange(index + 1)} className={currentPage === index + 1 ? style.activePage : null}>
                                 {index + 1}
                             </li>
                         ))}
+
                     </div>
                 </div>
             </div>
@@ -216,4 +197,4 @@ const Profile = () => {
     );
 };
 
-export default Profile;
+export default Favorite;

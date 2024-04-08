@@ -10,8 +10,15 @@ import Login from './components/loginRegister/Login';
 import Register from './components/loginRegister/Register';
 import Settings from './components/profile/Settings';
 import Profile from './components/profile/Profile';
+
+import Favorite from './components/profile/Favorite';
+
 import { AuthProvider } from './components/context/AuthContext';
 import CreateArticles from './components/articles/CreateArticles';
+import EditArticle from './components/articles/EditArticle';
+import ProfileAuthor from './components/profile/ProfileAuthor';
+
+
 function App() {
   return (
     <AuthProvider>
@@ -25,7 +32,14 @@ function App() {
     <Route path="/article/:slug" element={<ArticleDetail></ArticleDetail>}/>
     <Route path="/settings" element={<Settings></Settings>}/>
     <Route path="/profile/:username" element={<Profile></Profile>}/>
+    <Route path="/profileAuthor/:username" element={<ProfileAuthor></ProfileAuthor>}/>
+
+    <Route path="/profile/:username/favorites" element={<Favorite></Favorite>}/>
+
     <Route path="/CreateArticles" element={<CreateArticles></CreateArticles>}/>
+    <Route path="/edit/:slug" element={<EditArticle></EditArticle>}/>
+  
+
     </Routes>
     <Footer></Footer>
     

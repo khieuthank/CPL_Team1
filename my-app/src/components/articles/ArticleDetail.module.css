@@ -26,6 +26,7 @@
 .articleButton {
     display: flex; 
     align-items: center;
+
 }
 
 
@@ -158,5 +159,7 @@
     display: inline-block;
 }
 
-
-
+.commentSign {
+   margin-left: 10%;
+   margin-right: 10%;
+ }

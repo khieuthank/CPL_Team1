@@ -1,5 +1,5 @@
 .profile {
-    min-height: 85vh;
+    min-height: 90vh;
 
     .banner-profile {
         text-align: center;
@@ -34,5 +34,9 @@
     }
     .nav .nav-item{
         margin-left: 50px;
+    }
+    .nav-item p {
+        background-color: white;
+        border: none;
     }
 }
