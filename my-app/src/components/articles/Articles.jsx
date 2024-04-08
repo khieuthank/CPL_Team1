@@ -6,6 +6,7 @@ import ArticlesTag from './ArticlesTag';
 import GlobalFeed from './GlobalFeed';
 import YourFeed from './YourFeed';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 
 const Articles = () => {
@@ -71,9 +72,9 @@ const Articles = () => {
                 <div className='row'>
                     <div className='col-md-9'>
                         <div className={style.titleGlobal}>
-                            {isLoggedIn && (<a className={isPage === 'yourfeed' ? style.aActive : ''} onClick={() => handleToPage('yourfeed')}>Your feed</a>)}
-                            <a className={isPage === 'globalfeed' ? style.aActive : ''} onClick={() => handleToPage('globalfeed')}>Global Feed</a>
-                            {tagSelect !== null && (<a className={isPage === 'tagfeed' ? style.aActive : ''} onClick={() => handleToPage('tagfeed')}>#{tagSelect}</a>)}
+                            {isLoggedIn && (<Link to='/' className={isPage === 'yourfeed' ? style.aActive : ''} onClick={() => handleToPage('yourfeed')}>Your feed</Link>)}
+                            <Link to='/' className={isPage === 'globalfeed' ? style.aActive : ''} onClick={() => handleToPage('globalfeed')}>Global Feed</Link>
+                            {tagSelect !== null && (<Link to='/' className={isPage === 'tagfeed' ? style.aActive : ''} onClick={() => handleToPage('tagfeed')}>#{tagSelect}</Link>)}
                         </div>
                         {
                             <div className={isPage == 'tagfeed' ? null : style.disable}><ArticlesTag tag={tagSelect}></ArticlesTag></div>
