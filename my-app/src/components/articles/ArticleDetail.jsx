@@ -302,14 +302,14 @@ const ArticleDetail = () => {
                             {token ? (
                                 <div className={`d-flex justify-content-center align-items-center`}>
                                     <Comment></Comment>
-                                </div>        
+                                </div>      
                             ) : (
                                 <div className={style.linkSign}>
                                     <>
                                         <Link to="/users/login" >Sign In</Link>
                                         <span className="mx-2">or</span>
                                         <Link to="/users/register" >Sign Up</Link>
-                                        <span>to add comments on this article</span>
+                                        <span> to add comments on this article</span>
                                     </>
                                 </div>
                             )}
