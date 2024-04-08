@@ -108,7 +108,7 @@ const YourFeed = () => {
 
 
     return (
-        <div>
+        <div className={style.containerYourFeed}>
             {
                 isloadArticles ? (<p>Loading...</p>) : (
                     articles.map((article, index) => (

@@ -205,3 +205,6 @@
     background-color:  #5CB85C !important;
     color: white !important;
   }
+  .containerYourFeed {
+    min-height: 78vh;
+  }

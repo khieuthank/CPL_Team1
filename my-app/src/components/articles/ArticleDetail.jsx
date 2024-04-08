@@ -244,7 +244,7 @@ const ArticleDetail = () => {
     
     // ----------------------------------------------------------------------------------------------
     return (
-        <div>
+        <div className={style.containerArticleDetail}>
             {
                 loading ? (<p>Loading...</p>) : (
                     <div className={style.containerAll}>
@@ -298,15 +298,17 @@ const ArticleDetail = () => {
                             ))}
                         </ul>
 
-                        <div className={`d-flex justify-content-center align-items-center`}>
+                        <div >
                             {token ? (
-                                <Comment></Comment>
+                                <div className={`d-flex justify-content-center align-items-center`}>
+                                    <Comment></Comment>
+                                </div>        
                             ) : (
-                                <div className={`d-flex flex-column align-items-center ${style.linkSign}`}>
+                                <div className={style.linkSign}>
                                     <>
-                                        <Link to="/users/login" className="btn btn-primary">Sign In</Link>
+                                        <Link to="/users/login" >Sign In</Link>
                                         <span className="mx-2">or</span>
-                                        <Link to="/users/register" className="btn btn-secondary">Sign Up</Link>
+                                        <Link to="/users/register" >Sign Up</Link>
                                         <span>to add comments on this article</span>
                                     </>
                                 </div>
