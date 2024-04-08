@@ -3,6 +3,10 @@ import { useParams } from 'react-router-dom';
 import style from './ArticleDetail.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Comment from '../comments/Comments'
+import axios from 'axios';
+
+
+
 const ArticleDetail = () => {
 
 
@@ -14,10 +18,18 @@ const ArticleDetail = () => {
     const [tags, setTags] = useState([]);
     const [error, setError] = useState(null);
     const [user, setUser] = useState({});
+    const [usernameState, setUsername] = useState('');
 
     const token = localStorage.getItem('token');
 
     const nav = useNavigate();
+
+    useEffect(() => {      
+       
+            fetchUserData(token);
+      
+    }, []);
+
 
     useEffect(() => {
         if (token) {
@@ -62,6 +74,23 @@ const ArticleDetail = () => {
         }
 
     }, []);
+
+
+    
+    const fetchUserData = async (token) => {
+        try {
+            const response = await axios.get('https://api.realworld.io/api/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            const userData = response.data.user;           
+            setUsername(userData.username);          
+           
+        } catch (error) {
+            console.error('Fetching user data failed:', error);
+        }
+    };
 
     useEffect(() => {
         if (token && !loading) {
@@ -266,7 +295,7 @@ const ArticleDetail = () => {
 
                                 </div>
                                 <div className={style.articleButton}>
-                                    {token && article.author.username === user.username ? (
+                                    {token && article.author.username === usernameState ? (
                                         <>
                                             <button onClick={handleEditClick}>
                                                 <i className="fa-solid fa-edit"></i> Edit Article
