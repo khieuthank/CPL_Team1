@@ -221,12 +221,15 @@ const ArticleDetail = () => {
     };
 
     const handleDeleteClick = () => {
-        fetch(`https://api.realworld.io/api/articles/${article.slug}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Token ${token}`
-            }
-        })
+        const isConfirmed = window.confirm('Are you sure you want to delete this article?');
+        
+        if (isConfirmed) {
+            fetch(`https://api.realworld.io/api/articles/${article.slug}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to delete article');
@@ -236,7 +239,9 @@ const ArticleDetail = () => {
             .catch(error => {
                 setError(error.message);
             });
+        }
     };
+    
     // ----------------------------------------------------------------------------------------------
     return (
         <div>
@@ -249,7 +254,7 @@ const ArticleDetail = () => {
                                 <div className={style.articleImage}>
                                     <img src={article.author.image} alt="Image" />
                                     <div>
-                                        <a href="">{article.author.username}</a>
+                                    <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
                                         <span className="date">
                                             {new Date(article.createdAt).toLocaleDateString('en-US', {
                                                 year: 'numeric',

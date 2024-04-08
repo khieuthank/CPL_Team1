@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import './profile.css';
-import style from './Favorite.module.css';
 import { formatDate } from '../../utils/utils';
 import { useNavigate } from 'react-router-dom';
+import style from './Profile.module.css';
 
-const Favorite = () => {
+const Profile = () => {
     const itemsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -14,8 +14,11 @@ const Favorite = () => {
     const { username } = useParams();
     const [image, setImage] = useState('');
     const [usernameState, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [bio, setBio] = useState('');
-    const [favoritedArticles, setFavoritedArticles] = useState([]);
+    const [articles, setArticles] = useState([]);
+    const [myArticles, setMyArticles] = useState([]);
+    const [following, setFollowing] = useState(false);  // Thêm state để lưu trạng thái theo dõi
     const nav = useNavigate();
 
     useEffect(() => {
@@ -23,66 +26,38 @@ const Favorite = () => {
         if (storedToken) {
             fetchUserData(storedToken);
         }
-        fetchUserFavoriteArticles(username, storedToken);
+        fetchUserYourArticles(username, storedToken);
     }, [username, currentPage]);
 
     const fetchUserData = async (token) => {
         try {
-            const response = await axios.get('https://api.realworld.io/api/user', {
+            const response = await axios.get(`https://api.realworld.io/api/profiles/${username}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            const userData = response.data.user;
+            const userData = response.data.profile;
             setImage(userData.image);
             setUsername(userData.username);
+            setEmail(userData.email);
             setBio(userData.bio);
-
+            setFollowing(userData.following);  // Lưu trạng thái theo dõi từ API
         } catch (error) {
             console.error('Fetching user data failed:', error);
         }
     };
 
-    const favoriteArticle = async (slug) => {
-        const storedToken = localStorage.getItem('token');
+    const fetchUserYourArticles = async (username, token) => {
         try {
-            const response = await axios.post(`https://api.realworld.io/api/articles/${slug}/favorite`, {}, {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`
-                }
-            });
-            fetchUserFavoriteArticles(username, storedToken);
-        } catch (error) {
-            console.error('Favoriting article failed:', error);
-        }
-    };
-
-    const unfavoriteArticle = async (slug) => {
-        const storedToken = localStorage.getItem('token');
-        try {
-            const response = await axios.delete(`https://api.realworld.io/api/articles/${slug}/favorite`, {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`
-                }
-            });
-            fetchUserFavoriteArticles(username, storedToken);
-        } catch (error) {
-            console.error('Unfavoriting article failed:', error);
-        }
-    };
-
-    const fetchUserFavoriteArticles = async (username, token) => {
-        try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&favorited=${username}`, {
+            const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&author=${username}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-
-            setFavoritedArticles(response.data.articles);
+            setMyArticles(response.data.articles);
             setTotalPages(Math.ceil(response.data.articlesCount / itemsPerPage));
         } catch (error) {
-            console.error('Fetching user favorite articles failed:', error);
+            console.error('Fetching my articles failed:', error);
         }
     };
 
@@ -94,27 +69,30 @@ const Favorite = () => {
         setCurrentPage(page);
     };
 
-    const isArticleFavorited = (article) => {
-        return article.favorited;
-    };
-
-    const FavoriteButton = ({ article }) => {
-        if (isArticleFavorited(article)) {
-            return (
-                <div className={style.favorite}>
-                    <button onClick={() => unfavoriteArticle(article.slug)} style={{ backgroundColor: 'green' }}>
-                        <i className="fa-solid fa-heart"></i> {article.favoritesCount}
-                    </button>
-                </div>
-            );
+    const handleFollowClick = () => {
+        const storedToken = localStorage.getItem('token');
+        if (!storedToken) {
+            nav("/users/login");
         } else {
-            return (
-                <div className={style.favorite}>
-                    <button onClick={() => favoriteArticle(article.slug)} style={{ backgroundColor: 'white' }}>
-                        <i className="fa-solid fa-heart"></i> {article.favoritesCount}
-                    </button>
-                </div>
-            );
+            const apiUrl = following
+                ? `https://api.realworld.io/api/profiles/${username}/follow`
+                : `https://api.realworld.io/api/profiles/${username}/follow`;
+
+            const method = following ? 'DELETE' : 'POST';
+
+            axios({
+                method: method,
+                url: apiUrl,
+                headers: {
+                    Authorization: `Bearer ${storedToken}`
+                }
+            })
+            .then(response => {
+                setFollowing(!following);  // Đảo ngược trạng thái theo dõi
+            })
+            .catch(error => {
+                console.error('Error occurred while toggling follow:', error);
+            });
         }
     };
 
@@ -122,7 +100,7 @@ const Favorite = () => {
         <div className='profile'>
             <div className='banner-profile'>
                 <div className='image-profile'>
-                    <img src={image} alt="User" />
+                    <img src={image} alt="User"></img>
                 </div>
                 <div className='username'>
                     {usernameState}
@@ -131,26 +109,29 @@ const Favorite = () => {
                     {bio}
                 </div>
                 <div className='button-banner'>
-                    <Link to="/settings">
-                        <button>
-                            Edit profile setting
-                        </button>
-                    </Link>
+                    <button onClick={handleFollowClick}>
+                        {following ? 'Unfollow' : 'Follow'}
+                    </button>
                 </div>
             </div>
             <div className='body-profile'>
                 <div className={style.navList}>
                     <div className={style.navItemArticles}>
-                        <Link to={`/profile/${username}`}>
-                            <a>My Articles</a>
-                        </Link>
+                        <a>
+                            My Articles
+                        </a>
                     </div>
                     <div className={style.navItemFarvorite}>
-                        <a>Favorited Articles</a>
+                        <Link to="favorites">
+                            <a>
+                                Favorited Articles
+                            </a>
+                        </Link>
                     </div>
                 </div>
+
                 <div className={style.favoriteContainer}>
-                    {favoritedArticles.map((article) => (
+                    {myArticles.map((article) => (
                         <div className='article-item' key={article.slug}>
                             <div className={style.article}>
                                 <div className={style.articleInfo}>
@@ -161,7 +142,9 @@ const Favorite = () => {
                                             <p>{formatDate(article.createdAt)}</p>
                                         </div>
                                     </div>
-                                    <FavoriteButton article={article} />
+                                    <div className={style.favorite}>
+                                        <button><i className="fa-solid fa-heart"></i> {article.favoritesCount}</button>
+                                    </div>
                                 </div>
                                 <div className={style.articlePreview}>
                                     <div className={style.content} onClick={() => handleToArticleDetails(article.slug)}>
@@ -193,4 +176,4 @@ const Favorite = () => {
     );
 };
 
-export default Favorite;
+export default Profile;
