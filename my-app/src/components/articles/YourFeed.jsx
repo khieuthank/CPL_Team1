@@ -3,7 +3,7 @@ import style from './Articles.module.css';
 import { useState, useEffect } from 'react';
 import { formatDate } from '../../utils/utils';
 import { useAuth } from '../context/AuthContext';
-
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const YourFeed = () => {
@@ -117,7 +117,7 @@ const YourFeed = () => {
                                 <div className={style.info}>
                                     <img src={article.author.image} alt="" />
                                     <div className={style.infoDetails}>
-                                        <a href="">{article.author.username}</a>
+                                    <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
                                         <p>{formatDate(article.createdAt)}</p>
                                     </div>
                                 </div>
