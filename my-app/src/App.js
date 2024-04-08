@@ -18,7 +18,6 @@ import CreateArticles from './components/articles/CreateArticles';
 import EditArticle from './components/articles/EditArticle';
 import ProfileAuthor from './components/profile/ProfileAuthor';
 
-
 function App() {
   return (
     <AuthProvider>
@@ -38,6 +37,9 @@ function App() {
 
     <Route path="/CreateArticles" element={<CreateArticles></CreateArticles>}/>
     <Route path="/edit/:slug" element={<EditArticle></EditArticle>}/>
+
+   
+
   
 
     </Routes>
