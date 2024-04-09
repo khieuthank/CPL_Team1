@@ -5,7 +5,9 @@ import { formatDate } from '../../utils/utils';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
 import { useFavorite } from '../context/FavoriteContext';
+
 
 const YourFeed = () => {
 
@@ -39,7 +41,8 @@ const YourFeed = () => {
                 })
                 .catch(error => console.error('Error fetching tags:', error));
         }
-    },  [currentPage, isLoggedIn])
+    }, [currentPage, isLoggedIn])
+
 
 
     useEffect(() =>{
@@ -63,9 +66,11 @@ const YourFeed = () => {
         nav(`/article/${slug}`);
     }
 
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
 
 
     const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
@@ -81,6 +86,7 @@ const YourFeed = () => {
         return(
             <p className={style.noArticle}>No articles are here... yet.</p>
         )
+
     }
 
 
@@ -94,7 +100,7 @@ const YourFeed = () => {
                                 <div className={style.info}>
                                     <img src={article.author.image} alt="" />
                                     <div className={style.infoDetails}>
-                                    <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
+                                        <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
                                         <p>{formatDate(article.createdAt)}</p>
                                     </div>
                                 </div>

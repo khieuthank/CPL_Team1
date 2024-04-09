@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { formatDate } from '../../utils/utils';
 
 import { useNavigate } from 'react-router-dom';
+import { handleFavoriteRender } from '../../utils/utils';
 
 import { useFavorite } from '../context/FavoriteContext';
 
@@ -77,6 +78,7 @@ const ArticlesTag = ({ tag }) => {
     }
     
 
+
     const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
         if(storedToken == null){
             nav("/users/login");
@@ -84,6 +86,7 @@ const ArticlesTag = ({ tag }) => {
             handleFavorite(favoritesCount, slug, isLike, storedToken, articles);
         }
         
+
     }
 
 
