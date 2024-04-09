@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/CPL_Team1/static/css/main.649d2c62.css",
+    "main.js": "/CPL_Team1/static/js/main.2bdb9889.js",
+    "static/js/453.ed3810f9.chunk.js": "/CPL_Team1/static/js/453.ed3810f9.chunk.js",
+    "index.html": "/CPL_Team1/index.html",
+    "main.649d2c62.css.map": "/CPL_Team1/static/css/main.649d2c62.css.map",
+    "main.2bdb9889.js.map": "/CPL_Team1/static/js/main.2bdb9889.js.map",
+    "453.ed3810f9.chunk.js.map": "/CPL_Team1/static/js/453.ed3810f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.649d2c62.css",
+    "static/js/main.2bdb9889.js"
+  ]
+}
