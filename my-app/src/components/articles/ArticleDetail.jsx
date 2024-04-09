@@ -3,65 +3,94 @@ import { useParams } from 'react-router-dom';
 import style from './ArticleDetail.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Comment from '../comments/Comments'
+import axios from 'axios';
+
+
+
 const ArticleDetail = () => {
 
 
     const { slug } = useParams();
-    console.log(slug);
+    
     // ------------------------------------------------------------------
     const [article, setArticle] = useState({});
     const [loading, setLoading] = useState(true);
     const [tags, setTags] = useState([]);
     const [error, setError] = useState(null);
     const [user, setUser] = useState({});
+    const [usernameState, setUsername] = useState('');
 
     const token = localStorage.getItem('token');
 
     const nav = useNavigate();
 
+    useEffect(() => {      
+       
+            fetchUserData(token);
+      
+    }, []);
+
+
     useEffect(() => {
-        if(token){
+        if (token) {
             fetch(`https://api.realworld.io/api/articles/${slug}`, {
                 headers: {
                     'Authorization': `Token ${token}`
                 }
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch article');
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch article');
 
-                }
-                return response.json();
-            })
-            .then(data => {
-                setArticle(data.article);
-                setLoading(false);
-            })
-            .catch(error => {
-                setError(error.message);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setArticle(data.article);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    setError(error.message);
 
-            });
-            
-        }else{
+                });
+
+        } else {
             fetch(`https://api.realworld.io/api/articles/${slug}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch article');
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch article');
 
-                }
-                return response.json();
-            })
-            .then(data => {
-                setArticle(data.article);
-                setLoading(false);
-            })
-            .catch(error => {
-                setError(error.message);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setArticle(data.article);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    setError(error.message);
 
-            });
+                });
         }
-        
+
     }, []);
+
+
+    
+    const fetchUserData = async (token) => {
+        try {
+            const response = await axios.get('https://api.realworld.io/api/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            const userData = response.data.user;           
+            setUsername(userData.username);          
+           
+        } catch (error) {
+            console.error('Fetching user data failed:', error);
+        }
+    };
 
     useEffect(() => {
         if (token && !loading) {
@@ -130,12 +159,12 @@ const ArticleDetail = () => {
                         setError(error.message);
 
                     });
-            }else{
+            } else {
                 const profileData = {
                     profile: {
-                      following: true
+                        following: true
                     }
-                  };
+                };
 
                 fetch(`https://api.realworld.io/api/profiles/${article.author.username}/follow`, {
                     method: 'POST',
@@ -165,7 +194,7 @@ const ArticleDetail = () => {
 
     const handleFavoriteClick = (slug) => {
         const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
-        if(article.favorited){
+        if (article.favorited) {
             fetch(apiUrl, {
                 method: 'DELETE',
                 headers: {
@@ -185,7 +214,7 @@ const ArticleDetail = () => {
                 .catch(error => {
                     console.error('Error occurred while updating favorite:', error);
                 });
-        }else{
+        } else {
             const newData = {
                 article: {
                     favoritesCount: article.favoritesCount + 1
@@ -213,9 +242,38 @@ const ArticleDetail = () => {
                 });
         }
     };
+
+
+    //---------------------
+    const handleEditClick = () => {
+        nav(`/edit/${article.slug}`);
+    };
+
+    const handleDeleteClick = () => {
+        const isConfirmed = window.confirm('Are you sure you want to delete this article?');
+        
+        if (isConfirmed) {
+            fetch(`https://api.realworld.io/api/articles/${article.slug}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete article');
+                }
+                nav('/');
+            })
+            .catch(error => {
+                setError(error.message);
+            });
+        }
+    };
+    
     // ----------------------------------------------------------------------------------------------
     return (
-        <div>
+        <div className={style.containerArticleDetail}>
             {
                 loading ? (<p>Loading...</p>) : (
                     <div className={style.containerAll}>
@@ -225,7 +283,7 @@ const ArticleDetail = () => {
                                 <div className={style.articleImage}>
                                     <img src={article.author.image} alt="Image" />
                                     <div>
-                                        <a href="">{article.author.username}</a>
+                                    <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
                                         <span className="date">
                                             {new Date(article.createdAt).toLocaleDateString('en-US', {
                                                 year: 'numeric',
@@ -237,7 +295,16 @@ const ArticleDetail = () => {
 
                                 </div>
                                 <div className={style.articleButton}>
-                                    {token ? (
+                                    {token && article.author.username === usernameState ? (
+                                        <>
+                                            <button onClick={handleEditClick}>
+                                                <i className="fa-solid fa-edit"></i> Edit Article
+                                            </button>
+                                            <button onClick={handleDeleteClick}>
+                                                <i className="fa-solid fa-trash"></i> Delete Article
+                                            </button>
+                                        </>
+                                    ) : (
                                         <>
                                             <button className={`${style.buttonFollow} ${user.following ? style.followActive : ''}`} onClick={handleFollowClick}>
                                                 <i className="fa-solid fa-plus"></i> {user.following ? 'Unfollow' : 'Follow'} {article.author.username}
@@ -245,13 +312,6 @@ const ArticleDetail = () => {
                                             <button className={`${style.buttonFavorite} ${article.favorited ? style.faActive : ''}`} onClick={() => handleFavoriteClick(article.slug)}>
                                                 <i className="fa-solid fa-heart"></i> {article.favorited ? 'Unfavorite' : 'Favorite'} Article ({article.favoritesCount})
                                             </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Link to="/users/register">
-                                                <button className={style.buttonFollow}><i className="fa-solid fa-plus"></i> Follow Maksim Esteban</button>
-                                                <button className={style.buttonFavorite}><i className="fa-solid fa-heart"></i> Favorite Article ({article.favoritesCount})</button>
-                                            </Link>
                                         </>
                                     )}
                                 </div>
@@ -267,16 +327,18 @@ const ArticleDetail = () => {
                             ))}
                         </ul>
 
-                        <div className={`d-flex justify-content-center align-items-center`}>
+                        <div >
                             {token ? (
-                                <Comment></Comment>
+                                <div className={`d-flex justify-content-center align-items-center`}>
+                                    <Comment></Comment>
+                                </div>      
                             ) : (
-                                <div className={`d-flex flex-column align-items-center ${style.linkSign}`}>
+                                <div className={style.linkSign}>
                                     <>
-                                        <Link to="/users/login" className="btn btn-primary">Sign In</Link>
+                                        <Link to="/users/login" >Sign In</Link>
                                         <span className="mx-2">or</span>
-                                        <Link to="/users/register" className="btn btn-secondary">Sign Up</Link>
-                                        <span>to add comments on this article</span>
+                                        <Link to="/users/register" >Sign Up</Link>
+                                        <span> to add comments on this article</span>
                                     </>
                                 </div>
                             )}

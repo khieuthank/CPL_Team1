@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import axios from 'axios';  
 import Settings from '../profile/Settings';
 import style from './Header.module.css';
@@ -71,33 +71,35 @@ const Header = () => {
                 <div className="ml-auto">
                     <ul className="nav navbar-nav d-flex flex-row">
                         <li className="nav-item" style={{ marginLeft: '15px' }}>
-                            <Link className="nav-link" to="/" >Home</Link>
+                            <NavLink className="nav-link" to="/" >Home</NavLink>
                         </li>
                         {isLoggedIn ? (
                             <>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <Link className="nav-link" to="/settings">Settings</Link>
+                                    <NavLink className="nav-link" to="/settings">Settings</NavLink>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <Link className="nav-link" to="/CreateArticles">New Article</Link>
+                                    <NavLink className="nav-link" to="/CreateArticles">New Article</NavLink>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <Link to={`/profile/${username}`} className="nav-link active">
+                                    <NavLink to={`/profile/${username}`} className="nav-link active">
                                         <img src={image} className={style.imageUser} alt={username} />
                                         <span className={style.nameUser}>{username}</span>
-                                    </Link>
+                                    </NavLink>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
+                                    <Link to={`/`} style={{textDecoration:'none'}}>
+                                    <button className="nav-link btn btn-link" onClick={handleLogout} >Logout</button>        
+                                    </Link>
                                 </li>
                             </>
                         ) : (
                             <>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <Link className="nav-link" to="/users/login">Sign In</Link>
+                                    <NavLink className="nav-link" to="/users/login">Sign In</NavLink>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <Link className="nav-link" to="/users/register">Sign Up</Link>
+                                    <NavLink className="nav-link" to="/users/register">Sign Up</NavLink>
                                 </li>
                             </>
                         )}
