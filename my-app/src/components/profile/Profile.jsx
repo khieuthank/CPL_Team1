@@ -46,20 +46,6 @@ const Profile = () => {
             console.error('Fetching user data failed:', error);
         }
     };
-
-    const fetchUserArticles = async (token) => {
-        try {
-            const response = await axios.get(`https://api.realworld.io/api/articles?author=${username}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setArticles(response.data.articles);
-        } catch (error) {
-            console.error('Fetching user articles failed:', error);
-        }
-    };
-
     const fetchUserYourArticles = async (username, token) => {
         try {
             const response = await axios.get(`https://api.realworld.io/api/articles?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&author=${username}`, {
@@ -107,12 +93,19 @@ const Profile = () => {
                     Authorization: `Bearer ${storedToken}`
                 }
             });
-            fetchUserFavoriteArticles(username, storedToken);
+            const updatedArticles = myArticles.map(article => {
+                if (article.slug === slug) {
+                    return { ...article, favorited: true, favoritesCount: article.favoritesCount + 1 };
+                }
+                return article;
+            });
+            setMyArticles(updatedArticles);
+            const updatedFavoritedArticles = [...favoritedArticles, updatedArticles.find(article => article.slug === slug)];
+            setFavoritedArticles(updatedFavoritedArticles);
         } catch (error) {
             console.error('Favoriting article failed:', error);
         }
     };
-
     const unfavoriteArticle = async (slug) => {
         const storedToken = localStorage.getItem('token');
         try {
@@ -121,12 +114,30 @@ const Profile = () => {
                     Authorization: `Bearer ${storedToken}`
                 }
             });
-            fetchUserFavoriteArticles(username, storedToken);
+            const updatedArticles = myArticles.map(article => {
+                if (article.slug === slug) {
+                    return { ...article, favorited: false, favoritesCount: article.favoritesCount - 1 };
+                }
+                return article;
+            });
+            setMyArticles(updatedArticles);
+            const updatedFavoritedArticles = favoritedArticles.filter(article => article.slug !== slug);
+            setFavoritedArticles(updatedFavoritedArticles);
         } catch (error) {
             console.error('Unfavoriting article failed:', error);
         }
     };
+    useEffect(() => {
+        const link = document.createElement('link');
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        document.head.appendChild(link);
 
+        return () => {
+            document.head.removeChild(link);
+        };
+    }, []);
     return (
         <div className='profile'>
             <div className='banner-profile'>
@@ -141,9 +152,7 @@ const Profile = () => {
                 </div>
                 <div className='button-banner'>
                     <Link to="/settings">
-                        <button>
-                            Edit profile setting
-                        </button>
+                        <button className={style.buttonEditProfile}><i class="fa-solid fa-gear"></i> Edit profile settings</button>
                     </Link>
                 </div>
             </div>
@@ -176,8 +185,8 @@ const Profile = () => {
                                     </div>
                                     <div className={style.favorite}>
                                         {isArticleFavorited(article) ? (
-                                            <button style={{ backgroundColor:'green' }} onClick={() => unfavoriteArticle(article.slug)}>
-                                                <i className="fa-solid fa-heart" style={{ color:'white' }}></i> {article.favoritesCount}
+                                            <button style={{ backgroundColor: 'green' }} onClick={() => unfavoriteArticle(article.slug)}>
+                                                <i className="fa-solid fa-heart" style={{ color: 'white' }}></i> {article.favoritesCount}
                                             </button>
                                         ) : (
                                             <button onClick={() => favoriteArticle(article.slug)}>

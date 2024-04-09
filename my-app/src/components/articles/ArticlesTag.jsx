@@ -6,6 +6,8 @@ import { formatDate } from '../../utils/utils';
 import { useNavigate } from 'react-router-dom';
 import { handleFavoriteRender } from '../../utils/utils';
 
+import { useFavorite } from '../context/FavoriteContext';
+
 const ArticlesTag = ({ tag }) => {
 
     const itemsPerPage = 10;
@@ -14,6 +16,8 @@ const ArticlesTag = ({ tag }) => {
     const [totalPages, setTotalPages] = useState(1);
     const [isloadArticles, setIsLoadArticles] = useState(true);
     const [articles, setArticles] = useState([]);
+
+    const { favorite, handleFavorite } = useFavorite();
 
     const storedToken = localStorage.getItem('token');
 
@@ -49,6 +53,22 @@ const ArticlesTag = ({ tag }) => {
         
     }, [currentPage, tag]);
 
+    useEffect(() =>{
+        setArticles(
+            articles => {
+                return articles.map(article => {
+                    if (article.slug === favorite.slug) {
+                        return {
+                            ...article,
+                            favorited: favorite.favorited,
+                            favoritesCount: favorite.favoritesCount
+                        };
+                    }
+                    return article;
+                });
+            }
+        )
+    },[favorite])
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -57,14 +77,23 @@ const ArticlesTag = ({ tag }) => {
         nav(`/article/${slug}`);
     }
     
-    const handleFavorite = (favorite, slug, index) => {
-        handleFavoriteRender(favorite, slug, index);
+
+
+    const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
+        if(storedToken == null){
+            nav("/users/login");
+        }else{
+            handleFavorite(favoritesCount, slug, isLike, storedToken, articles);
+        }
+        
+
     }
+
 
     return (
         <div>
             {
-                isloadArticles ? (<p>Loading...</p>) : (
+                isloadArticles ? (<p className={style.loading}>Loading...</p>) : (
                     articles.map((article,index) => (
                         <div className={style.article}>
                             <div className={style.articleInfo}>
@@ -76,7 +105,7 @@ const ArticlesTag = ({ tag }) => {
                                     </div>
                                 </div>
                                 <div className={style.favorite}>
-                                    <button id={'ft' + index} className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavorite(article.favoritesCount, article.slug, index)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
+                                    <button className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavoriteArticle(article.favoritesCount, article.slug, article.favorited)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
                                 </div>
                             </div>
                             <div className={style.articlePreview}>

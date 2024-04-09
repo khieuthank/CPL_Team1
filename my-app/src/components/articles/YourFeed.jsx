@@ -5,13 +5,16 @@ import { formatDate } from '../../utils/utils';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { handleFavoriteRender } from '../../utils/utils';
+
+import { useFavorite } from '../context/FavoriteContext';
+
 
 const YourFeed = () => {
 
     const itemsPerPage = 10;
 
     const { isLoggedIn } = useAuth();
+    const { favorite, handleFavorite } = useFavorite();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -19,10 +22,11 @@ const YourFeed = () => {
     const [articles, setArticles] = useState([]);
 
     const nav = useNavigate();
+    const storedToken = localStorage.getItem('token');
 
     useEffect(() => {
         const apiUrl = `https://api.realworld.io/api/articles/feed?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}`;
-        const storedToken = localStorage.getItem('token');
+        
         if (storedToken) {
             fetch(apiUrl, {
                 headers: {
@@ -40,23 +44,54 @@ const YourFeed = () => {
     }, [currentPage, isLoggedIn])
 
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+
+    useEffect(() =>{
+        setArticles(
+            articles => {
+                return articles.map(article => {
+                    if (article.slug === favorite.slug) {
+                        return {
+                            ...article,
+                            favorited: favorite.favorited,
+                            favoritesCount: favorite.favoritesCount
+                        };
+                    }
+                    return article;
+                });
+            }
+        )
+    },[favorite])
 
     const handleToArticleDetails = (slug) => {
         nav(`/article/${slug}`);
     }
 
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
-    const handleFavorite = (favorite, slug, index) => {
-        handleFavoriteRender(favorite, slug, index);
+
+
+    const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
+        if(storedToken == null){
+            nav("/users/login");
+        }else{
+            handleFavorite(favoritesCount, slug, isLike, storedToken, articles);
+        }
+        
+    }
+
+    if(articles.length == 0){
+        return(
+            <p className={style.noArticle}>No articles are here... yet.</p>
+        )
+
     }
 
 
     return (
-        <div>
+        <div className={style.containerYourFeed}>
             {
                 isloadArticles ? (<p>Loading...</p>) : (
                     articles.map((article, index) => (
@@ -70,7 +105,7 @@ const YourFeed = () => {
                                     </div>
                                 </div>
                                 <div className={style.favorite}>
-                                    <button id={'fe' + index} className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavorite(article.favoritesCount, article.slug, index)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
+                                    <button className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavoriteArticle(article.favoritesCount, article.slug, article.favorited)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
                                 </div>
                             </div>
                             <div className={style.articlePreview}>

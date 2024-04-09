@@ -14,13 +14,16 @@ import Profile from './components/profile/Profile';
 import Favorite from './components/profile/Favorite';
 
 import { AuthProvider } from './components/context/AuthContext';
+import { FavoriteProvider } from './components/context/FavoriteContext';
 import CreateArticles from './components/articles/CreateArticles';
 import EditArticle from './components/articles/EditArticle';
 import ProfileAuthor from './components/profile/ProfileAuthor';
 
 function App() {
   return (
+    <FavoriteProvider>
     <AuthProvider>
+      
     <BrowserRouter>
     
     <Header></Header>
@@ -38,15 +41,14 @@ function App() {
     <Route path="/CreateArticles" element={<CreateArticles></CreateArticles>}/>
     <Route path="/edit/:slug" element={<EditArticle></EditArticle>}/>
 
-   
-
-  
 
     </Routes>
     <Footer></Footer>
     
     </BrowserRouter>
     </AuthProvider>
+    </FavoriteProvider>
+    
     
   );
 }
