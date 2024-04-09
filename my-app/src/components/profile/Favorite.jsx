@@ -103,7 +103,7 @@ const Favorite = () => {
         if (isArticleFavorited(article)) {
             return (
                 <div className={style.favorite}>
-                    <button onClick={() => unfavoriteArticle(article.slug)} style={{ backgroundColor: 'green' }}>
+                    <button onClick={() => unfavoriteArticle(article.slug)} style={{ backgroundColor: '#5CB85C', color: 'white' }}>
                         <i className="fa-solid fa-heart"></i> {article.favoritesCount}
                     </button>
                 </div>
