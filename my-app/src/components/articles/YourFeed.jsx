@@ -43,7 +43,6 @@ const YourFeed = () => {
 
 
     useEffect(() =>{
-        console.log('ahihi');
         setArticles(
             articles => {
                 return articles.map(article => {
@@ -70,20 +69,17 @@ const YourFeed = () => {
 
 
     const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
-        handleFavorite(favoritesCount, slug, isLike, storedToken, articles)
-        setArticles(
-            prevArticles  => {
-                return prevArticles .map(article => {
-                    if (article.slug === favorite.slug) {
-                        return {
-                            ...article,
-                            favorited: favorite.favorited,
-                            favoritesCount: favorite.favoritesCount
-                        };
-                    }
-                    return article;
-                });
-            }
+        if(storedToken == null){
+            nav("/users/login");
+        }else{
+            handleFavorite(favoritesCount, slug, isLike, storedToken, articles);
+        }
+        
+    }
+
+    if(articles.length == 0){
+        return(
+            <p className={style.noArticle}>No articles are here... yet.</p>
         )
     }
 

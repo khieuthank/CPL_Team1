@@ -53,7 +53,6 @@ const ArticlesTag = ({ tag }) => {
     }, [currentPage, tag]);
 
     useEffect(() =>{
-        console.log('ahihi');
         setArticles(
             articles => {
                 return articles.map(article => {
@@ -79,7 +78,12 @@ const ArticlesTag = ({ tag }) => {
     
 
     const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
-        handleFavorite(favoritesCount, slug, isLike, storedToken, articles)
+        if(storedToken == null){
+            nav("/users/login");
+        }else{
+            handleFavorite(favoritesCount, slug, isLike, storedToken, articles);
+        }
+        
     }
 
 
