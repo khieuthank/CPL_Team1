@@ -107,12 +107,17 @@ const Profile = () => {
                     Authorization: `Bearer ${storedToken}`
                 }
             });
-            fetchUserFavoriteArticles(username, storedToken);
+            const updatedArticles = myArticles.map(article => {
+                if (article.slug === slug) {
+                    return { ...article, favorited: true, favoritesCount: article.favoritesCount + 1 };
+                }
+                return article;
+            });
+            setMyArticles(updatedArticles);
         } catch (error) {
             console.error('Favoriting article failed:', error);
         }
-    };
-
+    };  
     const unfavoriteArticle = async (slug) => {
         const storedToken = localStorage.getItem('token');
         try {
@@ -121,12 +126,17 @@ const Profile = () => {
                     Authorization: `Bearer ${storedToken}`
                 }
             });
-            fetchUserFavoriteArticles(username, storedToken);
+            const updatedArticles = myArticles.map(article => {
+                if (article.slug === slug) {
+                    return { ...article, favorited: false, favoritesCount: article.favoritesCount - 1 };
+                }
+                return article;
+            });
+            setMyArticles(updatedArticles);
         } catch (error) {
             console.error('Unfavoriting article failed:', error);
         }
-    };
-
+    };    
     useEffect(() => {
         const link = document.createElement('link');
         link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
