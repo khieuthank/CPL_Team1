@@ -7,7 +7,7 @@ import GlobalFeed from './GlobalFeed';
 import YourFeed from './YourFeed';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-
+import { handleFavoriteRender } from '../../utils/utils';
 
 const Articles = () => {
 
@@ -61,6 +61,12 @@ const Articles = () => {
         }
 
     }
+
+    const handleFavorite = (favorite, slug, index) => {
+        handleFavoriteRender(favorite, slug, index);
+     }
+ 
+
 
     return (
         <div className={style.container}>

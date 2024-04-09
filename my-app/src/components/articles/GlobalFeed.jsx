@@ -5,7 +5,9 @@ import { formatDate } from '../../utils/utils';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
 import { useFavorite } from '../context/FavoriteContext';
+
 
 const GlobalFeed = () => {
 
@@ -78,6 +80,7 @@ const GlobalFeed = () => {
         nav(`/article/${slug}`);
     }
 
+
     const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
         if(storedToken == null){
             nav("/users/login");
@@ -86,6 +89,7 @@ const GlobalFeed = () => {
         }
         
     }
+
 
 
     return (
