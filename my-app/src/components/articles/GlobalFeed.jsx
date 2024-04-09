@@ -5,7 +5,9 @@ import { formatDate } from '../../utils/utils';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
 import { useFavorite } from '../context/FavoriteContext';
+
 
 const GlobalFeed = () => {
 
@@ -54,7 +56,6 @@ const GlobalFeed = () => {
     }, [currentPage, isLoggedIn]);
 
     useEffect(() =>{
-        console.log('ahihi');
         setArticles(
             articles => {
                 return articles.map(article => {
@@ -79,9 +80,16 @@ const GlobalFeed = () => {
         nav(`/article/${slug}`);
     }
 
+
     const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
-        handleFavorite(favoritesCount, slug, isLike, storedToken, articles);
+        if(storedToken == null){
+            nav("/users/login");
+        }else{
+            handleFavorite(favoritesCount, slug, isLike, storedToken, articles);
+        }
+        
     }
+
 
 
     return (

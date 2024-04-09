@@ -11,9 +11,6 @@ export const FavoriteProvider = ({ children }) => {
 
     const handleFavorite = (favorite, slug, isFavorite, storedToken, articles) => {
         const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
-        if (storedToken == null) {
-            //nav("/users/login");
-        } else {
             const newData = {
                 article: {
                     favoritesCount: isFavorite ? favorite - 1 : favorite + 1
@@ -40,7 +37,7 @@ export const FavoriteProvider = ({ children }) => {
                 .catch(error => {
                     console.error('Error occurred while updating favorite:', error);
                 });
-        }
+        
     };
     return (
         <FavoriteContext.Provider value={{ favorite, handleFavorite }}>

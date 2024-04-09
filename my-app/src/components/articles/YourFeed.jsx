@@ -5,7 +5,9 @@ import { formatDate } from '../../utils/utils';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
 import { useFavorite } from '../context/FavoriteContext';
+
 
 const YourFeed = () => {
 
@@ -39,11 +41,11 @@ const YourFeed = () => {
                 })
                 .catch(error => console.error('Error fetching tags:', error));
         }
-    },  [currentPage, isLoggedIn])
+    }, [currentPage, isLoggedIn])
+
 
 
     useEffect(() =>{
-        console.log('ahihi');
         setArticles(
             articles => {
                 return articles.map(article => {
@@ -64,27 +66,27 @@ const YourFeed = () => {
         nav(`/article/${slug}`);
     }
 
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
 
 
+
     const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
-        handleFavorite(favoritesCount, slug, isLike, storedToken, articles)
-        setArticles(
-            prevArticles  => {
-                return prevArticles .map(article => {
-                    if (article.slug === favorite.slug) {
-                        return {
-                            ...article,
-                            favorited: favorite.favorited,
-                            favoritesCount: favorite.favoritesCount
-                        };
-                    }
-                    return article;
-                });
-            }
+        if(storedToken == null){
+            nav("/users/login");
+        }else{
+            handleFavorite(favoritesCount, slug, isLike, storedToken, articles);
+        }
+        
+    }
+
+    if(articles.length == 0){
+        return(
+            <p className={style.noArticle}>No articles are here... yet.</p>
         )
+
     }
 
 
@@ -98,7 +100,7 @@ const YourFeed = () => {
                                 <div className={style.info}>
                                     <img src={article.author.image} alt="" />
                                     <div className={style.infoDetails}>
-                                    <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
+                                        <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
                                         <p>{formatDate(article.createdAt)}</p>
                                     </div>
                                 </div>

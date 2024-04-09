@@ -23,7 +23,7 @@
 }
 
 .titleGlobal a{
-    color: #5CB85C;
+    color: #4f4f4f;
     text-decoration: none;
     padding: 10px;
     font-size: 16px;
@@ -33,6 +33,7 @@
 
 .aActive{
     border-bottom: 2px solid #5CB85C !important;
+    color: #5CB85C !important;
 }
 
 .article{
@@ -204,7 +205,11 @@
 .btnAdd {
     background-color:  #5CB85C !important;
     color: white !important;
-  }
-  .containerYourFeed {
-    min-height: 78vh;
-  }
+
+}
+
+.noArticle{
+    margin-left: 10vw;
+    margin-bottom: 52.5vh;
+}
+
