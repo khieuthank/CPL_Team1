@@ -88,7 +88,9 @@ const Header = () => {
                                     </NavLink>
                                 </li>
                                 <li className="nav-item" style={{ marginLeft: '15px' }}>
-                                    <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
+                                    <Link to={`/`} style={{textDecoration:'none'}}>
+                                    <button className="nav-link btn btn-link" onClick={handleLogout} >Logout</button>        
+                                    </Link>
                                 </li>
                             </>
                         ) : (
