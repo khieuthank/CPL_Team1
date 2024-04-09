@@ -195,8 +195,13 @@ const Profile = () => {
                                     </div>
                                     <div className={style.favorite}>
                                         {isArticleFavorited(article) ? (
+<<<<<<< Updated upstream
                                             <button style={{ backgroundColor:'green' }} onClick={() => unfavoriteArticle(article.slug)}>
                                                 <i className="fa-solid fa-heart" style={{ color:'white' }}></i> {article.favoritesCount}
+=======
+                                            <button style={{ backgroundColor: '#5CB85C', color: 'white' }} onClick={() => unfavoriteArticle(article.slug)}>
+                                                <i className="fa-solid fa-heart" ></i> {article.favoritesCount}
+>>>>>>> Stashed changes
                                             </button>
                                         ) : (
                                             <button onClick={() => favoriteArticle(article.slug)}>
