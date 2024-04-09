@@ -91,7 +91,7 @@ const ArticlesTag = ({ tag }) => {
         <div>
             {
                 isloadArticles ? (<p className={style.loading}>Loading...</p>) : (
-                    articles.map((article,index) => (
+                    articles.map(article => (
                         <div className={style.article}>
                             <div className={style.articleInfo}>
                                 <div className={style.info}>
