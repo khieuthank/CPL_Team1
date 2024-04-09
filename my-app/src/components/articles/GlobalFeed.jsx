@@ -5,12 +5,15 @@ import { formatDate } from '../../utils/utils';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useFavorite } from '../context/FavoriteContext';
 
 const GlobalFeed = () => {
 
     const itemsPerPage = 10;
 
     const { isLoggedIn } = useAuth();
+
+    const { favorite, handleFavorite } = useFavorite();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -50,6 +53,24 @@ const GlobalFeed = () => {
 
     }, [currentPage, isLoggedIn]);
 
+    useEffect(() =>{
+        console.log('ahihi');
+        setArticles(
+            articles => {
+                return articles.map(article => {
+                    if (article.slug === favorite.slug) {
+                        return {
+                            ...article,
+                            favorited: favorite.favorited,
+                            favoritesCount: favorite.favoritesCount
+                        };
+                    }
+                    return article;
+                });
+            }
+        )
+    },[favorite])
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -58,69 +79,15 @@ const GlobalFeed = () => {
         nav(`/article/${slug}`);
     }
 
-    const handleFavorite = (favorite, slug, index) => {
-        const favoriteCountElement = document.querySelector(`#fa${index}`);
-        const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
-        if (storedToken == null) {
-            nav("/users/login");
-        } else {
-            if (favoriteCountElement.classList.value == '') {
-                const newData = {
-                    article: {
-                        favoritesCount: favorite + 1
-                    }
-                }
-                fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Token ${storedToken}`
-                    },
-                    body: JSON.stringify(newData)
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        favoriteCountElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.article.favoritesCount}`;
-                        favoriteCountElement.classList.add(style.btnAdd);
-                    })
-                    .catch(error => {
-                        console.error('Có lỗi xảy ra khi cập nhật:', error);
-                    });
-            } else {
-                fetch(apiUrl, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Token ${storedToken}`
-                    }
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        favoriteCountElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.article.favoritesCount}`;
-                        favoriteCountElement.classList.remove(style.btnAdd);
-                        console.log(data);
-                    })
-                    .catch(error => {
-                        console.error('Error occurred while updating favorite:', error);
-                    });
-            }
-        }
-
-
+    const handleFavoriteArticle = (favoritesCount, slug, isLike) => {
+        handleFavorite(favoritesCount, slug, isLike, storedToken, articles);
     }
+
+
     return (
         <div>
             {
-                isloadArticles ? (<p>Loading...</p>) : (
+                isloadArticles ? (<p className={style.loading}>Loading...</p>) : (
                     articles.map((article, index) => (
                         <div className={style.article} key={article.slug}>
                             <div className={style.articleInfo}>
@@ -132,7 +99,7 @@ const GlobalFeed = () => {
                                     </div>
                                 </div>
                                 <div className={style.favorite}>
-                                    <button id={'fa' + index} className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavorite(article.favoritesCount, article.slug, index)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
+                                    <button className={article.favorited ? style.btnAdd : ''} onClick={() => handleFavoriteArticle(article.favoritesCount, article.slug, article.favorited)}><i class="fa-solid fa-heart"></i> {article.favoritesCount}</button>
                                 </div>
                             </div>
                             <div className={style.articlePreview}>
