@@ -61,6 +61,7 @@ const GlobalFeed = () => {
 
   
     const handleFavorite = (favorite, slug, index) => {
+        
         handleFavoriteRender(favorite, slug, index);
      }
 

@@ -18,7 +18,7 @@ export const handleFavoriteRender = (favorite, slug, index) => {
   const apiUrl = `https://api.realworld.io/api/articles/${slug}/favorite`;
 
   if (storedToken == null) {
-    window.location.href = "/users/login";  // Navigate to login page
+    window.location.href = "/users/login";  
   } else {
     if (favoriteCountElement.classList.value === '') {
       const newData = {
@@ -35,19 +35,19 @@ export const handleFavoriteRender = (favorite, slug, index) => {
         },
         body: JSON.stringify(newData)
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        favoriteCountElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.article.favoritesCount}`;
-        favoriteCountElement.classList.add(style.btnAdd);
-      })
-      .catch(error => {
-        console.error('Có lỗi xảy ra khi cập nhật:', error);
-      });
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          favoriteCountElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.article.favoritesCount}`;
+          favoriteCountElement.classList.add(style.btnAdd);
+        })
+        .catch(error => {
+          console.error('Có lỗi xảy ra khi cập nhật:', error);
+        });
     } else {
       fetch(apiUrl, {
         method: 'DELETE',
@@ -55,20 +55,20 @@ export const handleFavoriteRender = (favorite, slug, index) => {
           'Authorization': `Token ${storedToken}`
         }
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        favoriteCountElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.article.favoritesCount}`;
-        favoriteCountElement.classList.remove(style.btnAdd);
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('Error occurred while updating favorite:', error);
-      });
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          favoriteCountElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.article.favoritesCount}`;
+          favoriteCountElement.classList.remove(style.btnAdd);
+          console.log(data);
+        })
+        .catch(error => {
+          console.error('Error occurred while updating favorite:', error);
+        });
     }
   }
 };

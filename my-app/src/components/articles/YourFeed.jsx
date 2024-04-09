@@ -37,7 +37,7 @@ const YourFeed = () => {
                 })
                 .catch(error => console.error('Error fetching tags:', error));
         }
-    },  [currentPage, isLoggedIn])
+    }, [currentPage, isLoggedIn])
 
 
     const handlePageChange = (page) => {
@@ -48,10 +48,10 @@ const YourFeed = () => {
         nav(`/article/${slug}`);
     }
 
- 
+
 
     const handleFavorite = (favorite, slug, index) => {
-       handleFavoriteRender(favorite, slug, index);
+        handleFavoriteRender(favorite, slug, index);
     }
 
 
@@ -65,7 +65,7 @@ const YourFeed = () => {
                                 <div className={style.info}>
                                     <img src={article.author.image} alt="" />
                                     <div className={style.infoDetails}>
-                                    <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
+                                        <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
                                         <p>{formatDate(article.createdAt)}</p>
                                     </div>
                                 </div>
