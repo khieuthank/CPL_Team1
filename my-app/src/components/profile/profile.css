@@ -24,6 +24,15 @@
         margin-right: 10%;
     }
 
+    .button-banner button{
+        color: #999;
+        background-color: white;
+        border: 1px solid #999;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
     .body-profile {
         display: center;
     }

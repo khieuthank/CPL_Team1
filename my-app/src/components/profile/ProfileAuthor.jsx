@@ -110,7 +110,7 @@ const Profile = () => {
                 </div>
                 <div className='button-banner'>
                     <button onClick={handleFollowClick}>
-                        {following ? 'Unfollow' : 'Follow'}
+                    <i class="fa-solid fa-plus"></i> {following ? 'Unfollow' : 'Follow'}  {usernameState}
                     </button>
                 </div>
             </div>

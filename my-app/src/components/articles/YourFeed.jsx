@@ -94,7 +94,7 @@ const YourFeed = () => {
         <div className={style.containerYourFeed}>
             {
                 isloadArticles ? (<p>Loading...</p>) : (
-                    articles.map((article, index) => (
+                    articles.map(article => (
                         <div className={style.article} key={article.slug}>
                             <div className={style.articleInfo}>
                                 <div className={style.info}>
