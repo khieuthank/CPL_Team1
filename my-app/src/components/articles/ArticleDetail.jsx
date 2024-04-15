@@ -273,7 +273,7 @@ const ArticleDetail = () => {
     
     // ----------------------------------------------------------------------------------------------
     return (
-        <div className={style.containerArticleDetail}>
+        <div className={style.containerArticleDetailMain}>
             {
                 loading ? (<p>Loading...</p>) : (
                     <div className={style.containerAll}>
@@ -284,7 +284,7 @@ const ArticleDetail = () => {
                                     <img src={article.author.image} alt="Image" />
                                     <div>
                                     <Link to={`/profileAuthor/${article.author.username}`}>{article.author.username}</Link>
-                                        <span className="date">
+                                        <span className={style.dateDetail}>
                                             {new Date(article.createdAt).toLocaleDateString('en-US', {
                                                 year: 'numeric',
                                                 month: 'long',
