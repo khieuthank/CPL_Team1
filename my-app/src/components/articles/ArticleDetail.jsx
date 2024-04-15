@@ -297,10 +297,10 @@ const ArticleDetail = () => {
                                 <div className={style.articleButton}>
                                     {token && article.author.username === usernameState ? (
                                         <>
-                                            <button onClick={handleEditClick}>
-                                                <i className="fa-solid fa-edit"></i> Edit Article
+                                            <button onClick={handleEditClick} className='btn btn-outline-secondary'>
+                                                <i className="fa-solid fa-edit "></i> Edit Article
                                             </button>
-                                            <button onClick={handleDeleteClick}>
+                                            <button onClick={handleDeleteClick} className='btn btn-outline-danger'>
                                                 <i className="fa-solid fa-trash"></i> Delete Article
                                             </button>
                                         </>
