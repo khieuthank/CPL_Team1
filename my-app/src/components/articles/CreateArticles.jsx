@@ -12,16 +12,16 @@ const CreateArticles = () => {
     const [tagList, setTagList] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    // useNavigate hook
+    
     const navigate = useNavigate();
 
-    // Handle form submission
+  
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem('token'); // Assume token is stored in local storage
+        const token = localStorage.getItem('token'); 
 
-        // Convert tagList string to array
+     
         const tags = tagList.split(',').map(tag => tag.trim());
 
         const articleData = {
@@ -45,11 +45,11 @@ const CreateArticles = () => {
                 }
             );
 
-            // Handle successful article creation
+           
             window.alert('Article created successfully!');
             setErrorMessage('');
 
-            // Clear form fields
+           
             setTitle('');
             setDescription('');
             setBody('');
@@ -57,8 +57,9 @@ const CreateArticles = () => {
 
             console.log('Article created:', response.data.article);
 
-            // Redirect to homepage
-            navigate('/');
+           
+            //navigate(`/article/${slug}`);
+            navigate(`/`);
         } catch (error) {
             // Handle error
             setErrorMessage('Error creating article. Please try again.');
