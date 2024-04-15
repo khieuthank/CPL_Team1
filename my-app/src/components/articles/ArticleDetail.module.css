@@ -167,3 +167,9 @@
  .containerArticleDetail {
     min-height: 50vh;
  }
+
+
+ .containerArticleDetail {
+    margin-left: 5%;
+    margin-right: 5%;
+}
