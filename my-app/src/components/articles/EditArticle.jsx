@@ -12,9 +12,9 @@ const EditArticle = () => {
     const [tagList, setTagList] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    // useNavigate hook
+    
     const navigate = useNavigate();
-    const { slug } = useParams(); // Get the slug from the URL
+    const { slug } = useParams(); 
 
     useEffect(() => {
         const fetchArticle = async () => {
@@ -24,7 +24,7 @@ const EditArticle = () => {
                 setTitle(article.title);
                 setDescription(article.description);
                 setBody(article.body);
-                setTagList(article.tagList.join(', ')); // Convert array to comma-separated string
+                setTagList(article.tagList.join(', ')); 
             } catch (error) {
                 console.error('Error fetching article:', error);
             }
@@ -33,15 +33,14 @@ const EditArticle = () => {
         fetchArticle();
     }, [slug]);
 
-    // Handle form submission
-// Handle form submission
+   
 const handleSubmit = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem('token');
 
     let tags = tagList.split(',').map(tag => tag.trim());
-    tags = tags.filter(tag => tag); // Remove empty tags
+    tags = tags.filter(tag => tag); 
 
     const articleData = {
         article: {
